@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrashIndex = 0;
   let score = 0;
   let draggedItem = null;
+  let offsetX = 0;
+  let offsetY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -69,10 +71,20 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
 
-    document.addEventListener("mousemove", dragMove);
-    document.addEventListener("mouseup", endDrag);
-    document.addEventListener("touchmove", dragMove, { passive: false });
-    document.addEventListener("touchend", endDrag);
+    const rect = draggedItem.getBoundingClientRect();
+
+    if (e.type === "touchstart") {
+      const touch = e.touches[0];
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+      document.addEventListener("touchmove", dragMove, { passive: false });
+      document.addEventListener("touchend", endDrag);
+    } else {
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      document.addEventListener("mousemove", dragMove);
+      document.addEventListener("mouseup", endDrag);
+    }
 
     draggedItem.style.transition = "none";
     draggedItem.style.zIndex = "1000";
@@ -91,11 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    const centerX = draggedItem.offsetWidth / 2;
-    const centerY = draggedItem.offsetHeight / 2;
-
-    draggedItem.style.left = `${clientX - centerX}px`;
-    draggedItem.style.top = `${clientY - centerY}px`;
+    draggedItem.style.left = `${clientX - offsetX}px`;
+    draggedItem.style.top = `${clientY - offsetY}px`;
     draggedItem.style.transform = "none";
   }
 
@@ -135,7 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      draggedItem.style.transition = "all 0.3s ease";
+      // Atgriež atpakaļ uz centru
+      draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
       draggedItem.style.transform = "translate(-50%, -50%)";
