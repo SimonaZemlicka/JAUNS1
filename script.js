@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentTrashIndex >= trashItems.length) {
       trashHolder.innerHTML = `
-        <h1>🎉 Visi atkritumi sašķiroti!</h1>
+        <h1>Visi atkritumi sašķiroti!</h1>
         <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
       `;
       return;
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rect = draggedItem.getBoundingClientRect();
 
     if (e.type === "touchstart") {
-      const touch = e.touches[0];
+      const touch = e.touches[5];
       offsetX = touch.clientX - rect.left;
       offsetY = touch.clientY - rect.top;
       document.addEventListener("touchmove", dragMove, { passive: false });
