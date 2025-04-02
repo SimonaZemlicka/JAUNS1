@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrashIndex = 0;
   let score = 0;
   let draggedItem = null;
-  let offsetX = 0;
-  let offsetY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -46,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentTrashIndex >= trashItems.length) {
       trashHolder.innerHTML = `
-        <h1>Visi atkritumi sašķiroti!</h1>
+        <h1>🎉 Visi atkritumi sašķiroti!</h1>
         <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
       `;
       return;
@@ -57,6 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
+
+    // centrē sākumā
     img.style.left = "50%";
     img.style.top = "50%";
     img.style.transform = "translate(-50%, -50%)";
@@ -68,28 +68,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startDrag(e) {
-  e.preventDefault();
-  draggedItem = e.target;
+    e.preventDefault();
+    draggedItem = e.target;
 
-  const rect = draggedItem.getBoundingClientRect();
-
-  if (e.type === "touchstart") {
-    const touch = e.touches[0];
-    offsetX = draggedItem.offsetWidth / 2;
-    offsetY = draggedItem.offsetHeight / 2;
-    document.addEventListener("touchmove", dragMove, { passive: false });
-    document.addEventListener("touchend", endDrag);
-  } else {
-    offsetX = draggedItem.offsetWidth / 2;
-    offsetY = draggedItem.offsetHeight /2;
     document.addEventListener("mousemove", dragMove);
     document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchmove", dragMove, { passive: false });
+    document.addEventListener("touchend", endDrag);
+
+    draggedItem.style.transition = "none";
+    draggedItem.style.zIndex = "1000";
   }
-
-  draggedItem.style.transition = "none";
-  draggedItem.style.zIndex = "1000";
-}
-
 
   function dragMove(e) {
     if (!draggedItem) return;
@@ -104,8 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedItem.style.left = `${clientX - offsetX}px`;
-    draggedItem.style.top = `${clientY - offsetY}px`;
+    // Tieši kursora vidū
+    const halfWidth = draggedItem.offsetWidth / 2;
+    const halfHeight = draggedItem.offsetHeight / 2;
+
+    draggedItem.style.left = `${clientX - halfWidth}px`;
+    draggedItem.style.top = `${clientY - halfHeight}px`;
     draggedItem.style.transform = "none";
   }
 
@@ -145,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež atpakaļ uz centru
       draggedItem.style.transition = "all 0.3s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
