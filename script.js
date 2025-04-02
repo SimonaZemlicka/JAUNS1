@@ -68,27 +68,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startDrag(e) {
-    e.preventDefault();
-    draggedItem = e.target;
+  e.preventDefault();
+  draggedItem = e.target;
 
-    const rect = draggedItem.getBoundingClientRect();
+  const rect = draggedItem.getBoundingClientRect();
 
-    if (e.type === "touchstart") {
-      const touch = e.touches[0];
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-      document.addEventListener("touchmove", dragMove, { passive: false });
-      document.addEventListener("touchend", endDrag);
-    } else {
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      document.addEventListener("mousemove", dragMove);
-      document.addEventListener("mouseup", endDrag);
-    }
-
-    draggedItem.style.transition = "none";
-    draggedItem.style.zIndex = "1000";
+  if (e.type === "touchstart") {
+    const touch = e.touches[0];
+    offsetX = draggedItem.offsetWidth / 2;
+    offsetY = draggedItem.offsetHeight / 2;
+    document.addEventListener("touchmove", dragMove, { passive: false });
+    document.addEventListener("touchend", endDrag);
+  } else {
+    offsetX = draggedItem.offsetWidth / 2;
+    offsetY = draggedItem.offsetHeight / 2;
+    document.addEventListener("mousemove", dragMove);
+    document.addEventListener("mouseup", endDrag);
   }
+
+  draggedItem.style.transition = "none";
+  draggedItem.style.zIndex = "1000";
+}
+
 
   function dragMove(e) {
     if (!draggedItem) return;
