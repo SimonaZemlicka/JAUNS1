@@ -62,7 +62,7 @@ body {
   transition: transform 0.4s ease, left 0.6s ease, top 0.6s ease;
   position: absolute; /* ← nodrošina precīzu pozicionēšanu */
   left: 50%;
-  top: 30%;
+  top: 48%;
   transform: translate(-50%, -50%); /* ← perfekta centrēšana */
 }
 
