@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadNextTrash();
     } else {
       // Atgriež atpakaļ uz centru
-      draggedItem.style.transition = "all 0.25s ease";
+      draggedItem.style.transition = "all 0.3s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
       draggedItem.style.transform = "translate(-50%, -50%)";
