@@ -22,46 +22,42 @@ body {
   justify-content: center;
   flex-wrap: wrap;
   gap: 30px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .bin {
-  width: 145px;
+  width: 140px;
   height: auto;
 }
 
 /* Atkritumu zona */
 .trash-zone {
-  width: 90%;
+  width: 100%;
   height: 200px;
-  background-color: white;
-  border: 3px dashed #ddd;
-  border-radius: 20px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
+  overflow: visible;
 }
 
 .trash-holder {
   position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
+/* Atkritumu attēli */
 .trash-item {
-  width: 150px;
-  cursor: grab;
+  width: 140px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  transition: all 0.2s ease-in-out;
-  z-index: 2;
+  cursor: grab;
+  transition: transform 0.2s ease-out, left 0.2s ease-out, top 0.2s ease-out;
+  z-index: 5;
 }
 
 /* Progresijas josla */
@@ -76,11 +72,10 @@ body {
 .progress-bar {
   position: relative;
   width: 100%;
-  height: 36px;
+  height: 30px;
   background-color: #eee;
-  border-radius: 18px;
+  border-radius: 15px;
   overflow: hidden;
-  margin-bottom: 10px;
 }
 
 .progress-fill {
@@ -88,25 +83,23 @@ body {
   background-color: #4CAF50;
   width: 0%;
   transition: width 0.4s ease;
-  border-radius: 18px 0 0 18px;
 }
 
 .progress-icon {
   position: absolute;
-  top: 50%;
-  left: 0%;
-  transform: translate(-50%, -50%);
+  top: -25px;
+  transform: translateX(-50%);
   transition: left 0.4s ease;
-  z-index: 3;
 }
 
 .progress-icon img {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
 }
 
 .progress-score {
-  font-size: 1.5rem;
+  margin-top: 10px;
+  font-size: 1.4rem;
   font-weight: bold;
   color: #1f6f3f;
 }
@@ -138,16 +131,12 @@ body {
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .bins {
-    gap: 20px;
-  }
-
   .bin {
-    width: 140px;
+    width: 120px;
   }
 
   .trash-item {
-    width: 130px;
+    width: 120px;
   }
 
   .btn {
