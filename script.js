@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rect = draggedItem.getBoundingClientRect();
 
     if (e.type === "touchstart") {
-      const touch = e.touches[5];
+      const touch = e.touches[0];
       offsetX = touch.clientX - rect.left;
       offsetY = touch.clientY - rect.top;
       document.addEventListener("touchmove", dragMove, { passive: false });
