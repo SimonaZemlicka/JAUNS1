@@ -78,7 +78,8 @@ body {
   height: 30px;
   background-color: #eee;
   border-radius: 15px;
-  overflow: hidden;
+  overflow: visible;
+
 }
 
 .progress-fill {
