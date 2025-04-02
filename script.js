@@ -75,13 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (e.type === "touchstart") {
     const touch = e.touches[0];
-    offsetX = draggedItem.offsetWidth / 2;
-    offsetY = draggedItem.offsetHeight / 2;
+    offsetX = draggedItem.offsetWidth / 0;
+    offsetY = draggedItem.offsetHeight / 0;
     document.addEventListener("touchmove", dragMove, { passive: false });
     document.addEventListener("touchend", endDrag);
   } else {
-    offsetX = draggedItem.offsetWidth / 2;
-    offsetY = draggedItem.offsetHeight / 2;
+    offsetX = draggedItem.offsetWidth / 0;
+    offsetY = draggedItem.offsetHeight /0;
     document.addEventListener("mousemove", dragMove);
     document.addEventListener("mouseup", endDrag);
   }
