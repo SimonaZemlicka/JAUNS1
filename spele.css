@@ -22,7 +22,7 @@ body {
   justify-content: center;
   flex-wrap: wrap;
   gap: 30px;
-  margin-bottom: 5 px;
+  margin-bottom: 5px;
 }
 
 .bin {
@@ -33,75 +33,33 @@ body {
 /* Atkritumu zona */
 .trash-zone {
   width: 90%;
-  min-height: 150px;
+  height: 200px;
   background-color: white;
   border: 3px dashed white;
   border-radius: 20px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
-  text-align: center;
-  padding: 0px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-/* Stabils konteineris iekš atkritumu zonas */
 .trash-holder {
+  position: relative;
+  width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Atkritumu attēli */
 .trash-item {
-  width: 150 px;
+  width: 150px;
   cursor: grab;
-  margin-top: 1 px;
-  transition: transform 0.4s ease, left 0.6s ease, top 0.6s ease;
-  position: absolute; /* ← nodrošina precīzu pozicionēšanu */
-  left: 50 %;
-  top: 48 %;
-  transform: translate(-50 %, -50 %); /* ← perfekta centrēšana */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease-out, left 0.2s ease-out, top 0.2s ease-out;
+  z-index: 2;
 }
-
-
-@keyframes shakeAnim {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
-}
-
-.shake {
-  animation: shakeAnim 0.4s ease;
-}
-
-
-.button-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.btn-back {
-  background-color: #1f6f3f;
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.btn-back:hover {
-  background-color: #145a30;
-}
-
 
 /* Progresijas josla */
 .progress-wrapper {
@@ -115,10 +73,11 @@ body {
 .progress-bar {
   position: relative;
   width: 100%;
-  height: 30px;
+  height: 36px;
   background-color: #eee;
-  border-radius: 15px;
+  border-radius: 18px;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .progress-fill {
@@ -126,58 +85,84 @@ body {
   background-color: #4CAF50;
   width: 0%;
   transition: width 0.4s ease;
+  border-radius: 18px 0 0 18px;
 }
 
 .progress-icon {
   position: absolute;
-  top: -25px;
-  transform: translateX(-50%);
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
   transition: left 0.4s ease;
+  z-index: 3;
 }
 
 .progress-icon img {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
 }
 
 .progress-score {
-  margin-top: 10px;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #1f6f3f;
 }
 
+/* Pogas */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background-color: #247339;
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: 28px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:hover {
+  background-color: #1a5a2d;
+}
+
+/* Shake animācija (ja vajag) */
+@keyframes shakeAnim {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shakeAnim 0.4s ease;
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
   .bins {
     gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
   }
 
   .bin {
-    width: 160px;
+    width: 140px;
   }
 
-.trash-item {
-  width: 10px;
-  cursor: grab;
-  transition: transform 0.4s ease, left 0.6s ease, top 0.6s ease;
-  position: absolute;
-  left: 50%;
-  top: 10%; /* ← pacelts no 50% uz 40% */
-  transform: translate(-50%, -50%);
-}
-
-  .trash-zone {
-    min-height: 150px;
-    padding: 5px;
+  .trash-item {
+    width: 130px;
   }
 
-  .btn-back {
-    font-size: 1.1rem;
-    padding: 12px 24px;
-    margin-left: 30px;
-    margin-top: 20px;
+  .btn {
+    font-size: 22px;
+    padding: 12px 32px;
   }
 
   .progress-icon img {
