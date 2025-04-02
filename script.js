@@ -1,11 +1,3 @@
-function playGame() {
-  window.location.href = "spele.html";
-}
-
-function showRules() {
-  window.location.href = "noteikumi.html";
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
   const bins = document.querySelectorAll(".bin");
@@ -18,8 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let draggedItem = null;
   let offsetX = 0;
   let offsetY = 0;
-  let startX = 0;
-  let startY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -39,10 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" }
+    { src: "bat3.png", type: "m6" },
   ];
 
-  const totalItems = trashItems.length;
+  shuffleArray(trashItems);
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -51,15 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  shuffleArray(trashItems);
-
   function loadNextTrash() {
     trashHolder.innerHTML = "";
 
     if (currentTrashIndex >= trashItems.length) {
       trashHolder.innerHTML = `
         <h1>🎉 Visi atkritumi sašķiroti!</h1>
-        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${totalItems}</strong>.</p>
+        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
       `;
       return;
     }
@@ -69,21 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.style.position = "absolute";
-
-    img.onload = () => {
-      const holderWidth = trashHolder.offsetWidth;
-      const holderHeight = trashHolder.offsetHeight;
-
-      const imgWidth = img.offsetWidth;
-      const imgHeight = img.offsetHeight;
-
-      startX = holderWidth / 2 - imgWidth / 2;
-      startY = holderHeight / 2 - imgHeight / 2;
-
-      img.style.left = `${startX}px`;
-      img.style.top = `${startY}px`;
-    };
 
     trashHolder.appendChild(img);
 
@@ -94,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function startDrag(e) {
     e.preventDefault();
     draggedItem = e.target;
-    draggedItem.style.zIndex = "1000";
+    draggedItem.style.transition = "none";
 
     const rect = draggedItem.getBoundingClientRect();
 
@@ -127,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     draggedItem.style.left = `${clientX - offsetX}px`;
     draggedItem.style.top = `${clientY - offsetY}px`;
+    draggedItem.style.transform = "none";
   }
 
   function endDrag() {
@@ -157,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentTrashIndex++;
       scoreDisplay.textContent = score;
 
-      const progress = (score / totalItems) * 100;
+      const progress = (score / trashItems.length) * 100;
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
@@ -165,14 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež uz sākuma vietu
+      // Atgriež uz sākuma pozīciju
       draggedItem.style.transition = "all 0.25s ease";
-      draggedItem.style.left = `${startX}px`;
-      draggedItem.style.top = `${startY}px`;
+      draggedItem.style.left = "50%";
+      draggedItem.style.top = "50%";
+      draggedItem.style.transform = "translate(-50%, -50%)";
       draggedItem = null;
     }
 
-    // Noņem notikumus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
