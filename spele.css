@@ -30,10 +30,13 @@ body {
   height: auto;
 }
 
-/* Atkritumu zona */
+/* ✅ Atkritumu zona ar pelēku pārtrauktu border */
 .trash-zone {
   width: 100%;
   height: 200px;
+  background-color: white;
+  border: 3px dashed #bbb; /* ← šeit ir pelēks border */
+  border-radius: 20px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -52,14 +55,12 @@ body {
 .trash-item {
   width: 140px;
   position: absolute;
-  cursor: grab;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  transition: left 0.2s ease, top 0.2s ease;
+  cursor: grab;
+  transition: transform 0.2s ease-out, left 0.2s ease-out, top 0.2s ease-out;
   z-index: 5;
-  user-select: none;
-  touch-action: none;
 }
 
 /* Progresijas josla */
