@@ -48,6 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     trashHolder.appendChild(img);
 
+    // Pēc ielādes centrē precīzi
+    img.onload = () => {
+      img.style.left = "50%";
+      img.style.top = "50%";
+      img.style.transform = "translate(-50%, -50%)";
+    };
+
     img.addEventListener("mousedown", startDrag);
     img.addEventListener("touchstart", startDrag, { passive: false });
   }
@@ -55,23 +62,25 @@ document.addEventListener("DOMContentLoaded", () => {
   function startDrag(e) {
     e.preventDefault();
     draggedItem = e.target;
-
-    const rect = draggedItem.getBoundingClientRect();
-
-    if (e.type === "touchstart") {
-      const touch = e.touches[0];
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-      document.addEventListener("touchmove", dragMove, { passive: false });
-      document.addEventListener("touchend", endDrag);
-    } else {
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      document.addEventListener("mousemove", dragMove);
-      document.addEventListener("mouseup", endDrag);
-    }
-
+    draggedItem.style.zIndex = "1000";
     draggedItem.style.transition = "none";
+
+    requestAnimationFrame(() => {
+      const rect = draggedItem.getBoundingClientRect();
+
+      if (e.type === "touchstart") {
+        const touch = e.touches[0];
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        document.addEventListener("touchmove", dragMove, { passive: false });
+        document.addEventListener("touchend", endDrag);
+      } else {
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        document.addEventListener("mousemove", dragMove);
+        document.addEventListener("mouseup", endDrag);
+      }
+    });
   }
 
   function dragMove(e) {
@@ -128,8 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež atpakaļ centrā
-      draggedItem.style.transition = "all 0.3s ease";
+      // Atgriež precīzi centrā
+      draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
       draggedItem.style.transform = "translate(-50%, -50%)";
