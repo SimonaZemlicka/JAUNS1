@@ -13,23 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
-    { src: "partika2.png", type: "m1" },
-    { src: "partika3.png", type: "m1" },
     { src: "stikls1.png", type: "m2" },
-    { src: "stikls2.png", type: "m2" },
-    { src: "stikls3.png", type: "m2" },
     { src: "metals1.png", type: "m3" },
-    { src: "metals2.png", type: "m3" },
-    { src: "metals3.png", type: "m3" },
     { src: "plast1.png", type: "m4" },
-    { src: "plast2.png", type: "m4" },
-    { src: "plast3.png", type: "m4" },
     { src: "papirs1.png", type: "m5" },
-    { src: "papirs2.png", type: "m5" },
-    { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
-    { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" },
   ];
 
   shuffleArray(trashItems);
@@ -67,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function startDrag(e) {
     e.preventDefault();
     draggedItem = e.target;
-    draggedItem.style.transition = "none";
 
     const rect = draggedItem.getBoundingClientRect();
 
@@ -83,6 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.addEventListener("mousemove", dragMove);
       document.addEventListener("mouseup", endDrag);
     }
+
+    draggedItem.style.transition = "none";
   }
 
   function dragMove(e) {
@@ -139,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Atgriež uz sākuma pozīciju
-      draggedItem.style.transition = "all 0.25s ease";
+      // Atgriež atpakaļ centrā
+      draggedItem.style.transition = "all 0.3s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
       draggedItem.style.transform = "translate(-50%, -50%)";
