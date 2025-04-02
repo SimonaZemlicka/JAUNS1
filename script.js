@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  if (!trashHolder) return;
-
   let currentTrashIndex = 0;
   let score = 0;
   let draggedItem = null;
@@ -41,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" },
+    { src: "bat3.png", type: "m6" }
   ];
 
   const totalItems = trashItems.length;
@@ -58,35 +56,39 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadNextTrash() {
     trashHolder.innerHTML = "";
 
-    if (currentTrashIndex < trashItems.length) {
-      const trash = trashItems[currentTrashIndex];
-      const img = document.createElement("img");
-      img.src = trash.src;
-      img.className = "trash-item";
-      img.setAttribute("data-type", trash.type);
-      img.style.position = "absolute";
-
-      trashHolder.appendChild(img);
-
-      // Pēc pievienošanas ielasa precīzu pozīciju
-      const holderRect = trashHolder.getBoundingClientRect();
-      const imgRect = img.getBoundingClientRect();
-
-      startX = holderRect.left + holderRect.width / 2 - imgRect.width / 2;
-      startY = holderRect.top + holderRect.height / 2 - imgRect.height / 2 - 30;
-
-      img.style.left = `${startX}px`;
-      img.style.top = `${startY}px`;
-      img.style.transform = "none";
-
-      img.addEventListener("mousedown", startDrag);
-      img.addEventListener("touchstart", startDrag, { passive: false });
-    } else {
+    if (currentTrashIndex >= trashItems.length) {
       trashHolder.innerHTML = `
         <h1>🎉 Visi atkritumi sašķiroti!</h1>
         <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${totalItems}</strong>.</p>
       `;
+      return;
     }
+
+    const trash = trashItems[currentTrashIndex];
+    const img = document.createElement("img");
+    img.src = trash.src;
+    img.className = "trash-item";
+    img.setAttribute("data-type", trash.type);
+    img.style.position = "absolute";
+
+    img.onload = () => {
+      const holderWidth = trashHolder.offsetWidth;
+      const holderHeight = trashHolder.offsetHeight;
+
+      const imgWidth = img.offsetWidth;
+      const imgHeight = img.offsetHeight;
+
+      startX = holderWidth / 2 - imgWidth / 2;
+      startY = holderHeight / 2 - imgHeight / 2;
+
+      img.style.left = `${startX}px`;
+      img.style.top = `${startY}px`;
+    };
+
+    trashHolder.appendChild(img);
+
+    img.addEventListener("mousedown", startDrag);
+    img.addEventListener("touchstart", startDrag, { passive: false });
   }
 
   function startDrag(e) {
@@ -123,10 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    requestAnimationFrame(() => {
-      draggedItem.style.left = `${clientX - offsetX}px`;
-      draggedItem.style.top = `${clientY - offsetY}px`;
-    });
+    draggedItem.style.left = `${clientX - offsetX}px`;
+    draggedItem.style.top = `${clientY - offsetY}px`;
   }
 
   function endDrag() {
@@ -166,13 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
       loadNextTrash();
     } else {
       // Atgriež uz sākuma vietu
-      draggedItem.style.transition = "all 0.3s ease";
+      draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = `${startX}px`;
       draggedItem.style.top = `${startY}px`;
       draggedItem = null;
     }
 
-    // Notīra visus eventus
+    // Noņem notikumus
     document.removeEventListener("mousemove", dragMove);
     document.removeEventListener("mouseup", endDrag);
     document.removeEventListener("touchmove", dragMove);
