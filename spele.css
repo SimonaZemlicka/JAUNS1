@@ -105,8 +105,8 @@ body {
 
 /* Progresijas josla */
 .progress-wrapper {
-  width: 90 %;
-  margin-top: 30 px;
+  width: 90%;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
