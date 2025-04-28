@@ -143,46 +143,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
- if (matched) {
-  score++;
-  currentTrashIndex++;
-  scoreDisplay.textContent = score;
+    if (matched) {
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
 
-  const progress = (score / trashItems.length) * 100;
-  progressFill.style.width = `${progress}%`;
-  progressIcon.style.left = `${progress}%`;
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      progressIcon.style.left = `${progress}%`;
 
-  const holderRect = trashHolder.getBoundingClientRect();
+      const holderRect = trashHolder.getBoundingClientRect();
 
-  bins.forEach((bin) => {
-    const binRect = bin.getBoundingClientRect();
-    const binType = bin.getAttribute("src").replace(".png", "");
+      bins.forEach((bin) => {
+        const binRect = bin.getBoundingClientRect();
+        const binType = bin.getAttribute("src").replace(".png", "");
 
-    if (trashType === binType) {
-      const centerX = binRect.left + binRect.width / 2;
+        if (trashType === binType) {
+          const centerX = binRect.left + binRect.width / 2;
+          const centerY = binRect.top + binRect.height / 2;
 
-      // ŠEIT IZMANTOJAM RĀMJA VERTIKĀLO CENTRU
-      const holderCenterY = holderRect.top + holderRect.height / 2;
+          const relativeCenterX = centerX - holderRect.left;
+          const relativeCenterY = centerY - holderRect.top;
 
-      const relativeCenterX = centerX - holderRect.left;
-      const relativeCenterY = holderCenterY - holderRect.top;
+          draggedOriginal.style.position = "absolute";
+          draggedOriginal.style.left = `${relativeCenterX}px`;
+          draggedOriginal.style.top = `${relativeCenterY}px`;
+          draggedOriginal.style.transform = "translate(-50%, -50%)";
+          draggedOriginal.style.transition = "all 0.3s ease"; // Smooth pārbīdes animācija
+        }
+      });
 
-      draggedOriginal.style.position = "absolute";
-      draggedOriginal.style.left = `${relativeCenterX}px`;
-      draggedOriginal.style.top = `${relativeCenterY}px`;
-      draggedOriginal.style.transform = "translate(-50%, -50%)";
-      draggedOriginal.style.transition = "all 0.3s ease"; // gluda ielidošana
-    }
-  });
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
 
-  draggedGhost.remove();
-  draggedGhost = null;
-  draggedOriginal = null;
-
-  loadNextTrash();
-}
-
-
+      loadNextTrash();
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
       draggedOriginal.style.opacity = "1";
