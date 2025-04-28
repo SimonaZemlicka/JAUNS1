@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
     trashHolder.innerHTML = "";
 
     if (currentTrashIndex >= trashItems.length) {
-      trashHolder.innerHTML = `
+      trashHolder.innerHTML = 
         <h1>🎉 Visi atkritumi sašķiroti!</h1>
         <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
-      `;
+      ;
       return;
     }
 
@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedGhost.style.left = `${clientX}px`;
-    draggedGhost.style.top = `${clientY}px`;
+    draggedGhost.style.left = ${clientX}px;
+    draggedGhost.style.top = ${clientY}px;
   }
 
   function dragMove(e) {
@@ -149,29 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
       scoreDisplay.textContent = score;
 
       const progress = (score / trashItems.length) * 100;
-      progressFill.style.width = `${progress}%`;
-      progressIcon.style.left = `${progress}%`;
-
-      const holderRect = trashHolder.getBoundingClientRect();
-
-      bins.forEach((bin) => {
-        const binRect = bin.getBoundingClientRect();
-        const binType = bin.getAttribute("src").replace(".png", "");
-
-        if (trashType === binType) {
-          const centerX = binRect.left + binRect.width / 2;
-          const centerY = binRect.top + binRect.height / 2;
-
-          const relativeCenterX = centerX - holderRect.left;
-          const relativeCenterY = centerY - holderRect.top;
-
-          draggedOriginal.style.position = "absolute";
-          draggedOriginal.style.left = `${relativeCenterX}px`;
-          draggedOriginal.style.top = `${relativeCenterY}px`;
-          draggedOriginal.style.transform = "translate(-50%, -50%)";
-          draggedOriginal.style.transition = "all 0.3s ease"; // Smooth pārbīdes animācija
-        }
-      });
+      progressFill.style.width = ${progress}%;
+      progressIcon.style.left = ${progress}%;
 
       draggedGhost.remove();
       draggedGhost = null;
