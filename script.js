@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-   if (matched) {
+ if (matched) {
   score++;
   currentTrashIndex++;
   scoreDisplay.textContent = score;
@@ -153,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
   progressIcon.style.left = `${progress}%`;
 
   const holderRect = trashHolder.getBoundingClientRect();
-  const heightAdjustment = 100; // <-- ŠEIT vari pielāgot cik augstu (lielāks skaitlis = vēl augstāk)
 
   bins.forEach((bin) => {
     const binRect = bin.getBoundingClientRect();
@@ -161,16 +160,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (trashType === binType) {
       const centerX = binRect.left + binRect.width / 2;
-      const centerY = binRect.top + binRect.height / 2 - heightAdjustment; // <-- ŠEIT paceļam augstāk
+
+      // ŠEIT IZMANTOJAM RĀMJA VERTIKĀLO CENTRU
+      const holderCenterY = holderRect.top + holderRect.height / 2;
 
       const relativeCenterX = centerX - holderRect.left;
-      const relativeCenterY = centerY - holderRect.top;
+      const relativeCenterY = holderCenterY - holderRect.top;
 
       draggedOriginal.style.position = "absolute";
       draggedOriginal.style.left = `${relativeCenterX}px`;
       draggedOriginal.style.top = `${relativeCenterY}px`;
       draggedOriginal.style.transform = "translate(-50%, -50%)";
-      draggedOriginal.style.transition = "all 0.3s ease";
+      draggedOriginal.style.transition = "all 0.3s ease"; // gluda ielidošana
     }
   });
 
@@ -180,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadNextTrash();
 }
+
 
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
