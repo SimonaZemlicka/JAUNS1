@@ -72,21 +72,24 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
 
-    const rect = draggedItem.getBoundingClientRect();
-
-    if (e.type.startsWith("touch")) {
-      const touch = e.touches[0];
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-    } else {
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-    }
-
-    // noņem centrēšanas transform
+    // Sākumā noņem transform lai varētu brīvi vilkt
     draggedItem.style.transform = "none";
     draggedItem.style.transition = "none";
     draggedItem.style.zIndex = "1000";
+
+    const rect = draggedItem.getBoundingClientRect();
+
+    let clientX, clientY;
+    if (e.type.startsWith("touch")) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    offsetX = clientX - rect.left;
+    offsetY = clientY - rect.top;
 
     moveItem(e);
 
@@ -97,6 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function moveItem(e) {
+    if (!draggedItem) return;
+
     let clientX, clientY;
     if (e.type.startsWith("touch")) {
       clientX = e.touches[0].clientX;
@@ -111,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function dragMove(e) {
-    if (!draggedItem) return;
     e.preventDefault();
     moveItem(e);
   }
@@ -152,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
+      // Ja nemet pareizi - atpakaļ uz centru
       draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
