@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let draggedGhost = null;
   let draggedOriginal = null;
-  let originalLeft = "";
-  let originalTop = "";
+  let startLeft = "";
+  let startTop = "";
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -74,12 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedOriginal = e.target;
 
-    // Saglabā sākuma pozīciju
-    originalLeft = draggedOriginal.style.left;
-    originalTop = draggedOriginal.style.top;
+    startLeft = draggedOriginal.style.left;
+    startTop = draggedOriginal.style.top;
 
-    // Izveido "ghost" kopiju
+    // Oriģinālo uztaisam blāvu
+    draggedOriginal.style.opacity = "0.5";
+
+    // Izveidojam spilgtu ghost
     draggedGhost = draggedOriginal.cloneNode(true);
+    draggedGhost.style.opacity = "1"; // ghost ir spilgts!
     draggedGhost.style.position = "fixed";
     draggedGhost.style.left = "0px";
     draggedGhost.style.top = "0px";
@@ -150,19 +153,18 @@ document.addEventListener("DOMContentLoaded", () => {
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
-      // Oriģinālais kļūst blāvāks
-      draggedOriginal.style.opacity = "0.5";
-
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
 
       loadNextTrash();
     } else {
-      // Ja nav pareizs, oriģinālais atgriežas sākuma vietā
-      draggedOriginal.style.left = originalLeft;
-      draggedOriginal.style.top = originalTop;
+      // ja metām nepareizi, atjauno oriģinālo
+      draggedOriginal.style.opacity = "1";
+      draggedOriginal.style.left = startLeft;
+      draggedOriginal.style.top = startTop;
       draggedOriginal.style.transform = "translate(-50%, -50%)";
+
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
