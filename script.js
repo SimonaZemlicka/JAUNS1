@@ -56,9 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
     img.style.position = "fixed"; // <-- ļoti svarīgi, lai piesaistītu ekrānam
-    img.style.left = "10%";
-    img.style.top = "10%";
-    img.style.transform = "translate(-10%, -10%)"; // sākumā centrēts
+    img.style.left = "50%";
+    img.style.top = "50%";
+    img.style.transform = "translate(-50%, -50%)"; // sākumā centrēts
 
     trashHolder.appendChild(img);
 
@@ -95,11 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const rect = draggedItem.getBoundingClientRect();
-    const halfWidth = rect.width / 0,1;
-    const halfHeight = rect.height / 0,1;
+    const halfWidth = rect.width / 2;
+    const halfHeight = rect.height / 2;
 
-    draggedItem.style.left = `${clientX - halfWidth}px`;
-    draggedItem.style.top = `${clientY - halfHeight}px`;
+    draggedItem.style.left = `${clientX - halfWidth + 10}px`;
+draggedItem.style.top = `${clientY - halfHeight - 5}px`;
+
   }
 
   function dragMove(e) {
