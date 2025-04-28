@@ -5,6 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
+  // Skaņas
+  const successSound = new Audio('sounds/success.mp3');
+  const errorSound = new Audio('sounds/error.mp3');
+  const victorySound = new Audio('sounds/victory.mp3');
+
+  let soundEnabled = true; // Skaņas ieslēgtas pēc noklusējuma
+
+  const muteButton = document.createElement("button");
+  muteButton.className = "btn mute-btn";
+  muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+  document.querySelector(".button-wrapper").appendChild(muteButton);
+
+  muteButton.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    muteButton.innerHTML = soundEnabled ? "🔊 Skaņa ieslēgta" : "🔇 Skaņa izslēgta";
+  });
+
   let currentTrashIndex = 0;
   let score = 0;
   let draggedOriginal = null;
@@ -53,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>Tu ieguvi <span class="big-score">${score}</span> punktus no <span class="big-score">${trashItems.length}</span>.</p>
         </div>
       `;
+      if (soundEnabled) victorySound.play();
       return;
     }
 
@@ -141,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (matched && matchedBin) {
+      if (soundEnabled) successSound.play();
       score++;
       currentTrashIndex++;
       scoreDisplay.textContent = score;
@@ -152,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const holderRect = trashHolder.getBoundingClientRect();
       const binRect = matchedBin.getBoundingClientRect();
       const centerX = binRect.left + binRect.width / 2;
-      const trashZoneY = holderRect.top + 40; // ← korekcija uz augšu (pelēkā līnija)
+      const trashZoneY = holderRect.top + 40;
 
       const relativeCenterX = centerX - holderRect.left;
       const relativeCenterY = trashZoneY - holderRect.top;
@@ -173,6 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       loadNextTrash();
     } else {
+      if (soundEnabled) errorSound.play();
       draggedOriginal.style.opacity = "1";
       draggedOriginal.style.left = startLeft;
       draggedOriginal.style.top = startTop;
