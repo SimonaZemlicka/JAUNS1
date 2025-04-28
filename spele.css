@@ -32,7 +32,7 @@ body {
 
 /* ✅ Atkritumu zona ar pelēku pārtrauktu border */
 .trash-zone {
-  width: 100%;
+  width: 120%;
   height: 200px;
   background-color: white;
   border: 3px dashed #bbb; /* ← šeit ir pelēks border */
@@ -53,7 +53,7 @@ body {
 
 /* Atkritumu attēli */
 .trash-item {
-  width: 140px;
+  width: 150px;
   position: absolute;
   left: 50%;
   top: 50%;
