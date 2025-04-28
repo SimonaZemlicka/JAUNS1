@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let draggedGhost = null;
   let draggedOriginal = null;
-  let startLeft = "";
-  let startTop = "";
+  let originalLeft = "";
+  let originalTop = "";
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -74,15 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedOriginal = e.target;
 
-    startLeft = draggedOriginal.style.left;
-    startTop = draggedOriginal.style.top;
+    // Saglabā sākuma pozīciju
+    originalLeft = draggedOriginal.style.left;
+    originalTop = draggedOriginal.style.top;
 
-    // Oriģinālo uztaisam blāvu
-    draggedOriginal.style.opacity = "0.5";
-
-    // Izveidojam spilgtu ghost
+    // Izveido "ghost" kopiju
     draggedGhost = draggedOriginal.cloneNode(true);
-    draggedGhost.style.opacity = "1"; // ghost ir spilgts!
     draggedGhost.style.position = "fixed";
     draggedGhost.style.left = "0px";
     draggedGhost.style.top = "0px";
@@ -144,29 +141,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-   if (matched) {
-  score++;
-  currentTrashIndex++;
-  scoreDisplay.textContent = score;
+    if (matched) {
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
 
-  const progress = (score / trashItems.length) * 100;
-  progressFill.style.width = `${progress}%`;
-  progressIcon.style.left = `${progress}%`;
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      progressIcon.style.left = `${progress}%`;
 
-  draggedGhost.remove();
-  draggedGhost = null;
-  draggedOriginal = null;
+      // Oriģinālais kļūst blāvāks
+      draggedOriginal.style.opacity = "0.5";
 
-  loadNextTrash(); // <<< Šis izsauc nākamo atkritumu!
-}
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
 
+      loadNextTrash();
     } else {
-      // ja metām nepareizi, atjauno oriģinālo
-      draggedOriginal.style.opacity = "1";
-      draggedOriginal.style.left = startLeft;
-      draggedOriginal.style.top = startTop;
+      // Ja nav pareizs, oriģinālais atgriežas sākuma vietā
+      draggedOriginal.style.left = originalLeft;
+      draggedOriginal.style.top = originalTop;
       draggedOriginal.style.transform = "translate(-50%, -50%)";
-
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
