@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   shuffleArray(trashItems);
+  loadNextTrash();
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -76,12 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
     startLeft = draggedOriginal.style.left;
     startTop = draggedOriginal.style.top;
 
-    // Oriģinālais kļūst blāvs
     draggedOriginal.style.opacity = "0.5";
 
-    // Spilgtais ghost
     draggedGhost = draggedOriginal.cloneNode(true);
-    draggedGhost.style.opacity = "1"; // Ghost ir spilgts
+    draggedGhost.style.opacity = "1";
     draggedGhost.style.position = "fixed";
     draggedGhost.style.left = "0px";
     draggedGhost.style.top = "0px";
@@ -102,14 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function moveGhost(e) {
     if (!draggedGhost) return;
 
-    let clientX, clientY;
-    if (e.type.startsWith("touch")) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
+    const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
 
     draggedGhost.style.left = `${clientX}px`;
     draggedGhost.style.top = `${clientY}px`;
@@ -126,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const trashType = draggedOriginal.dataset.type;
     const itemRect = draggedGhost.getBoundingClientRect();
     let matched = false;
+    let matchedBin = null;
 
     bins.forEach((bin) => {
       const binRect = bin.getBoundingClientRect();
@@ -140,10 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (overlap && trashType === binType) {
         matched = true;
+        matchedBin = bin;
       }
     });
 
-    if (matched) {
+    if (matched && matchedBin) {
       score++;
       currentTrashIndex++;
       scoreDisplay.textContent = score;
@@ -152,13 +147,32 @@ document.addEventListener("DOMContentLoaded", () => {
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
+      const holderRect = trashHolder.getBoundingClientRect();
+      const binRect = matchedBin.getBoundingClientRect();
+      const centerX = binRect.left + binRect.width / 2;
+      const trashZoneY = holderRect.top + 40; // ← augstums pielāgots virs pelēkās zonas
+
+      const relativeCenterX = centerX - holderRect.left;
+      const relativeCenterY = trashZoneY - holderRect.top;
+
+      draggedOriginal.style.position = "absolute";
+      draggedOriginal.style.left = `${relativeCenterX}px`;
+      draggedOriginal.style.top = `${relativeCenterY}px`;
+      draggedOriginal.style.transform = "translate(-50%, -50%) scale(1.1)";
+      draggedOriginal.style.transition = "all 0.3s ease";
+
+      // Mazs "pop" efekts
+      setTimeout(() => {
+        draggedOriginal.style.transform = "translate(-50%, -50%) scale(1)";
+      }, 300);
+
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
 
       loadNextTrash();
     } else {
-      // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
+      // Nepareizi
       draggedOriginal.style.opacity = "1";
       draggedOriginal.style.left = startLeft;
       draggedOriginal.style.top = startTop;
@@ -174,6 +188,4 @@ document.addEventListener("DOMContentLoaded", () => {
     document.removeEventListener("touchmove", dragMove);
     document.removeEventListener("touchend", endDrag);
   }
-
-  loadNextTrash();
 });
