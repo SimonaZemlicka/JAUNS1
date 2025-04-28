@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    if (matched) {
+ if (matched) {
   score++;
   currentTrashIndex++;
   scoreDisplay.textContent = score;
@@ -152,7 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
   progressFill.style.width = `${progress}%`;
   progressIcon.style.left = `${progress}%`;
 
-  // Pārbīda oriģinālo uz miskastes centru
+  const holderRect = trashHolder.getBoundingClientRect(); // <-- Jauna rindiņa, lai dabūtu pelēkā rāmja pozīciju
+
   bins.forEach((bin) => {
     const binRect = bin.getBoundingClientRect();
     const binType = bin.getAttribute("src").replace(".png", "");
@@ -161,9 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const centerX = binRect.left + binRect.width / 2;
       const centerY = binRect.top + binRect.height / 2;
 
-      draggedOriginal.style.position = "fixed"; 
-      draggedOriginal.style.left = `${centerX}px`;
-      draggedOriginal.style.top = `${centerY}px`;
+      const relativeX = centerX - holderRect.left; // <-- Rēķina attiecībā pret trashHolder
+      const relativeY = centerY - holderRect.top;
+
+      draggedOriginal.style.position = "absolute"; // <- nevis fixed!
+      draggedOriginal.style.left = `${relativeX}px`;
+      draggedOriginal.style.top = `${relativeY}px`;
       draggedOriginal.style.transform = "translate(-50%, -50%)";
     }
   });
@@ -174,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadNextTrash();
 }
+
 
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
