@@ -152,6 +152,27 @@ document.addEventListener("DOMContentLoaded", () => {
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
+      const holderRect = trashHolder.getBoundingClientRect();
+
+      bins.forEach((bin) => {
+        const binRect = bin.getBoundingClientRect();
+        const binType = bin.getAttribute("src").replace(".png", "");
+
+        if (trashType === binType) {
+          const centerX = binRect.left + binRect.width / 2;
+          const centerY = binRect.top + binRect.height / 2;
+
+          const relativeCenterX = centerX - holderRect.left;
+          const relativeCenterY = centerY - holderRect.top;
+
+          draggedOriginal.style.position = "absolute";
+          draggedOriginal.style.left = `${relativeCenterX}px`;
+          draggedOriginal.style.top = `${relativeCenterY}px`;
+          draggedOriginal.style.transform = "translate(-50%, -50%)";
+          draggedOriginal.style.transition = "all 0.3s ease"; // Smooth pārbīdes animācija
+        }
+      });
+
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
