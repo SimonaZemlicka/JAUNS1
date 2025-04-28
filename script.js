@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressIcon = document.getElementById("progressIcon");
 
   // 🎵 Fona mūzika
-  const backgroundMusic = new Audio('sounds/background.mp3');
+  const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.loop = true;
   backgroundMusic.volume = 0.4; // fona skaļums 40%
 
