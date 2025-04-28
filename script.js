@@ -5,10 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  // 🎵 Fona mūzika
-  const backgroundMusic = new Audio('speles_skana.mp3');
-  backgroundMusic.loop = true;
-  backgroundMusic.volume = 0.4; // fona skaļums 40%
+ const backgroundMusic = new Audio('sounds/background.mp3');
+backgroundMusic.volume = 0.4;
+
+// Svarīgi: NEIZMANTO "loop = true"
+backgroundMusic.addEventListener('ended', function() {
+  this.currentTime = 0;
+  this.play();
+}, false);
+
 
   let soundEnabled = true; // Skaņa ieslēgta sākumā
 
