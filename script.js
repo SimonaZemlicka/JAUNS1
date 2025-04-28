@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
     trashHolder.innerHTML = "";
 
     if (currentTrashIndex >= trashItems.length) {
-      trashHolder.innerHTML = 
+      trashHolder.innerHTML = `
         <h1>🎉 Visi atkritumi sašķiroti!</h1>
         <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
-      ;
+      `;
       return;
     }
 
@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedGhost.style.left = ${clientX}px;
-    draggedGhost.style.top = ${clientY}px;
+    draggedGhost.style.left = `${clientX}px`;
+    draggedGhost.style.top = `${clientY}px`;
   }
 
   function dragMove(e) {
@@ -144,37 +144,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (matched) {
-  score++;
-  currentTrashIndex++;
-  scoreDisplay.textContent = score;
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
 
-  const progress = (score / trashItems.length) * 100;
-  progressFill.style.width = ${progress}%;
-  progressIcon.style.left = ${progress}%;
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      progressIcon.style.left = `${progress}%`;
 
-  // Pārbīda oriģinālo uz miskastes centru
-  bins.forEach((bin) => {
-    const binRect = bin.getBoundingClientRect();
-    const binType = bin.getAttribute("src").replace(".png", "");
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
 
-    if (trashType === binType) {
-      const centerX = binRect.left + binRect.width / 2;
-      const centerY = binRect.top + binRect.height / 2;
-
-      draggedOriginal.style.position = "fixed"; 
-      draggedOriginal.style.left = ${centerX}px;
-      draggedOriginal.style.top = ${centerY}px;
-      draggedOriginal.style.transform = "translate(-50%, -50%)";
-    }
-  });
-
-  draggedGhost.remove();
-  draggedGhost = null;
-  draggedOriginal = null;
-
-  loadNextTrash();
-}
-
+      loadNextTrash();
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
       draggedOriginal.style.opacity = "1";
