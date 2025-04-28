@@ -143,43 +143,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
- if (matched) {
-  score++;
-  currentTrashIndex++;
-  scoreDisplay.textContent = score;
+    if (matched) {
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
 
-  const progress = (score / trashItems.length) * 100;
-  progressFill.style.width = `${progress}%`;
-  progressIcon.style.left = `${progress}%`;
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      progressIcon.style.left = `${progress}%`;
 
-  const holderRect = trashHolder.getBoundingClientRect(); // <-- Jauna rindiņa, lai dabūtu pelēkā rāmja pozīciju
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
 
-  bins.forEach((bin) => {
-    const binRect = bin.getBoundingClientRect();
-    const binType = bin.getAttribute("src").replace(".png", "");
-
-    if (trashType === binType) {
-      const centerX = binRect.left + binRect.width / 2;
-      const centerY = binRect.top + binRect.height / 2;
-
-      const relativeX = centerX - holderRect.left; // <-- Rēķina attiecībā pret trashHolder
-      const relativeY = centerY - holderRect.top;
-
-      draggedOriginal.style.position = "absolute"; // <- nevis fixed!
-      draggedOriginal.style.left = `${relativeX}px`;
-      draggedOriginal.style.top = `${relativeY}px`;
-      draggedOriginal.style.transform = "translate(-50%, -50%)";
-    }
-  });
-
-  draggedGhost.remove();
-  draggedGhost = null;
-  draggedOriginal = null;
-
-  loadNextTrash();
-}
-
-
+      loadNextTrash();
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
       draggedOriginal.style.opacity = "1";
