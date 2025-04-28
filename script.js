@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrashIndex = 0;
   let score = 0;
   let draggedItem = null;
-  let offsetX = 0;
-  let offsetY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -72,26 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
 
-    // Sākumā noņem transform lai varētu brīvi vilkt
+    // Noņem transform lai sāktu pozicionēt pēc kursora
     draggedItem.style.transform = "none";
     draggedItem.style.transition = "none";
     draggedItem.style.zIndex = "1000";
-
-    const rect = draggedItem.getBoundingClientRect();
-
-    let clientX, clientY;
-    if (e.type.startsWith("touch")) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    offsetX = clientX - rect.left;
-    offsetY = clientY - rect.top;
-
-    moveItem(e);
 
     document.addEventListener("mousemove", dragMove);
     document.addEventListener("mouseup", endDrag);
@@ -99,8 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("touchend", endDrag);
   }
 
-  function moveItem(e) {
+  function dragMove(e) {
     if (!draggedItem) return;
+    e.preventDefault();
 
     let clientX, clientY;
     if (e.type.startsWith("touch")) {
@@ -111,16 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedItem.style.left = `${clientX - offsetX}px`;
-    draggedItem.style.top = `${clientY - offsetY}px`;
+    const rect = draggedItem.getBoundingClientRect();
+    const halfWidth = rect.width / 2;
+    const halfHeight = rect.height / 2;
+
+    draggedItem.style.left = `${clientX - halfWidth}px`;
+    draggedItem.style.top = `${clientY - halfHeight}px`;
   }
 
-  function dragMove(e) {
-    e.preventDefault();
-    moveItem(e);
-  }
-
-  function endDrag(e) {
+  function endDrag() {
     if (!draggedItem) return;
 
     const trashType = draggedItem.dataset.type;
@@ -156,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Ja nemet pareizi - atpakaļ uz centru
+      // Nepareizi - atpakaļ uz centru
       draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
