@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentTrashIndex = 0;
   let score = 0;
-  let draggedItem = null;
+  let draggedGhost = null;
+  let draggedOriginal = null;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -55,10 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.style.position = "fixed"; // <-- ļoti svarīgi, lai piesaistītu ekrānam
     img.style.left = "50%";
     img.style.top = "50%";
-    img.style.transform = "translate(-50%, -50%)"; // sākumā centrēts
+    img.style.transform = "translate(-50%, -50%)";
+    img.style.position = "absolute";
 
     trashHolder.appendChild(img);
 
@@ -68,13 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function startDrag(e) {
     e.preventDefault();
-    draggedItem = e.target;
+    draggedOriginal = e.target;
 
-    draggedItem.style.transform = "none"; // noņem automātisko centrēšanu
-    draggedItem.style.transition = "none";
-    draggedItem.style.zIndex = "1000";
+    // Izveidojam jaunu "ghost" kopiju
+    draggedGhost = draggedOriginal.cloneNode(true);
+    draggedGhost.style.position = "fixed";
+    draggedGhost.style.left = "0px";
+    draggedGhost.style.top = "0px";
+    draggedGhost.style.transform = "translate(-50%, -50%)"; // centrs tieši uz kursoru
+    draggedGhost.style.pointerEvents = "none"; // lai ghost netraucē notikumus
+    draggedGhost.style.zIndex = "10000";
 
-    moveItem(e);
+    document.body.appendChild(draggedGhost);
+
+    moveGhost(e);
 
     document.addEventListener("mousemove", dragMove);
     document.addEventListener("mouseup", endDrag);
@@ -82,8 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("touchend", endDrag);
   }
 
-  function moveItem(e) {
-    if (!draggedItem) return;
+  function moveGhost(e) {
+    if (!draggedGhost) return;
 
     let clientX, clientY;
     if (e.type.startsWith("touch")) {
@@ -94,24 +102,20 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    const rect = draggedItem.getBoundingClientRect();
-    const halfWidth = rect.width / 2;
-    const halfHeight = rect.height / 2;
-
-    draggedItem.style.left = `${clientX - halfWidth}px`;
-    draggedItem.style.top = `${clientY - halfHeight}px`;
+    draggedGhost.style.left = `${clientX}px`;
+    draggedGhost.style.top = `${clientY}px`;
   }
 
   function dragMove(e) {
     e.preventDefault();
-    moveItem(e);
+    moveGhost(e);
   }
 
   function endDrag() {
-    if (!draggedItem) return;
+    if (!draggedGhost) return;
 
-    const trashType = draggedItem.dataset.type;
-    const itemRect = draggedItem.getBoundingClientRect();
+    const trashType = draggedOriginal.dataset.type;
+    const itemRect = draggedGhost.getBoundingClientRect();
     let matched = false;
 
     bins.forEach((bin) => {
@@ -139,16 +143,15 @@ document.addEventListener("DOMContentLoaded", () => {
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
-      draggedItem.remove();
-      draggedItem = null;
+      draggedOriginal.remove();
+      draggedGhost.remove();
+      draggedOriginal = null;
+      draggedGhost = null;
       loadNextTrash();
     } else {
-      // ja nepareizi - atpakaļ uz centru
-      draggedItem.style.transition = "all 0.25s ease";
-      draggedItem.style.left = "50%";
-      draggedItem.style.top = "50%";
-      draggedItem.style.transform = "translate(-50%, -50%)";
-      draggedItem = null;
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
     }
 
     document.removeEventListener("mousemove", dragMove);
