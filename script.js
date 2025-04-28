@@ -56,9 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
     img.style.position = "fixed"; // <-- ļoti svarīgi, lai piesaistītu ekrānam
-    img.style.left = "50%";
-    img.style.top = "50%";
-    img.style.transform = "translate(-50%, -50%)"; // sākumā centrēts
+    img.style.left = "10%";
+    img.style.top = "10%";
+    img.style.transform = "translate(-10%, -10%)"; // sākumā centrēts
 
     trashHolder.appendChild(img);
 
