@@ -53,10 +53,10 @@ body {
 
 /* Atkritumu attēli */
 .trash-item {
-  width: 140px;
+  width: 160px;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 30%;
   
   cursor: grab;
   transition: transform 0.2s ease-out, left 0.2s ease-out, top 0.2s ease-out;
