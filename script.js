@@ -144,19 +144,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (matched) {
-      score++;
-      currentTrashIndex++;
-      scoreDisplay.textContent = score;
+  score++;
+  currentTrashIndex++;
+  scoreDisplay.textContent = score;
 
-      const progress = (score / trashItems.length) * 100;
-      progressFill.style.width = `${progress}%`;
-      progressIcon.style.left = `${progress}%`;
+  const progress = (score / trashItems.length) * 100;
+  progressFill.style.width = `${progress}%`;
+  progressIcon.style.left = `${progress}%`;
 
-      draggedGhost.remove();
-      draggedGhost = null;
-      draggedOriginal = null;
+  // Pārbīda oriģinālo uz miskastes centru
+  bins.forEach((bin) => {
+    const binRect = bin.getBoundingClientRect();
+    const binType = bin.getAttribute("src").replace(".png", "");
 
-      loadNextTrash();
+    if (trashType === binType) {
+      const centerX = binRect.left + binRect.width / 2;
+      const centerY = binRect.top + binRect.height / 2;
+
+      draggedOriginal.style.position = "fixed"; 
+      draggedOriginal.style.left = `${centerX}px`;
+      draggedOriginal.style.top = `${centerY}px`;
+      draggedOriginal.style.transform = "translate(-50%, -50%)";
+    }
+  });
+
+  draggedGhost.remove();
+  draggedGhost = null;
+  draggedOriginal = null;
+
+  loadNextTrash();
+}
+
     } else {
       // Nepareizi - oriģināls kļūst atkal spilgts un paliek sākumā
       draggedOriginal.style.opacity = "1";
