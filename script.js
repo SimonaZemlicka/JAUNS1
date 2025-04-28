@@ -95,8 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const rect = draggedItem.getBoundingClientRect();
-    const halfWidth = rect.width / 2;
-    const halfHeight = rect.height / 2;
+    const halfWidth = rect.width / 0,5;
+    const halfHeight = rect.height / 0,5;
 
     draggedItem.style.left = `${clientX - halfWidth}px`;
     draggedItem.style.top = `${clientY - halfHeight}px`;
