@@ -151,8 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const progress = (score / trashItems.length) * 100;
       progressFill.style.width = `${progress}%`;
-    progressIcon.style.display = "none"; 
-
+      progressIcon.style.left = `${progress}%`;
 
       draggedGhost.remove();
       draggedGhost = null;
