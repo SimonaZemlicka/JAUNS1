@@ -48,8 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentTrashIndex >= trashItems.length) {
       trashHolder.innerHTML = `
-        <h1>🎉 Visi atkritumi sašķiroti!</h1>
-        <p>Tu ieguvi <strong>${score}</strong> punktus no <strong>${trashItems.length}</strong>.</p>
+        <div class="final-message">
+          <h1>🎉 Visi atkritumi sašķiroti!</h1>
+          <p>Tu ieguvi <span class="big-score">${score}</span> punktus no <span class="big-score">${trashItems.length}</span>.</p>
+        </div>
       `;
       return;
     }
@@ -150,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const holderRect = trashHolder.getBoundingClientRect();
       const binRect = matchedBin.getBoundingClientRect();
       const centerX = binRect.left + binRect.width / 2;
-      const trashZoneY = holderRect.top + 40; // ← augstums pielāgots virs pelēkās zonas
+      const trashZoneY = holderRect.top + 40; // ← korekcija uz augšu (pelēkā līnija)
 
       const relativeCenterX = centerX - holderRect.left;
       const relativeCenterY = trashZoneY - holderRect.top;
@@ -161,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedOriginal.style.transform = "translate(-50%, -50%) scale(1.1)";
       draggedOriginal.style.transition = "all 0.3s ease";
 
-      // Mazs "pop" efekts
       setTimeout(() => {
         draggedOriginal.style.transform = "translate(-50%, -50%) scale(1)";
       }, 300);
@@ -172,7 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       loadNextTrash();
     } else {
-      // Nepareizi
       draggedOriginal.style.opacity = "1";
       draggedOriginal.style.left = startLeft;
       draggedOriginal.style.top = startTop;
