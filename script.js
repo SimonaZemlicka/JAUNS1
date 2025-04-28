@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrashIndex = 0;
   let score = 0;
   let draggedItem = null;
+  let offsetX = 0;
+  let offsetY = 0;
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -70,7 +72,18 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedItem = e.target;
 
-    // noņem transform, lai pozīcija būtu korekta
+    const rect = draggedItem.getBoundingClientRect();
+
+    if (e.type.startsWith("touch")) {
+      const touch = e.touches[0];
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+    } else {
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+    }
+
+    // noņem centrēšanas transform
     draggedItem.style.transform = "none";
     draggedItem.style.transition = "none";
     draggedItem.style.zIndex = "1000";
@@ -93,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
       clientY = e.clientY;
     }
 
-    draggedItem.style.left = `${clientX}px`;
-    draggedItem.style.top = `${clientY}px`;
+    draggedItem.style.left = `${clientX - offsetX}px`;
+    draggedItem.style.top = `${clientY - offsetY}px`;
   }
 
   function dragMove(e) {
@@ -139,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null;
       loadNextTrash();
     } else {
-      // Ja kļūda - atgriež uz centru
       draggedItem.style.transition = "all 0.25s ease";
       draggedItem.style.left = "50%";
       draggedItem.style.top = "50%";
