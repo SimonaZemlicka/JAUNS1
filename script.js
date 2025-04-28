@@ -144,20 +144,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    if (matched) {
-      score++;
-      currentTrashIndex++;
-      scoreDisplay.textContent = score;
+   if (matched) {
+  score++;
+  currentTrashIndex++;
+  scoreDisplay.textContent = score;
 
-      const progress = (score / trashItems.length) * 100;
-      progressFill.style.width = `${progress}%`;
-      progressIcon.style.left = `${progress}%`;
+  const progress = (score / trashItems.length) * 100;
+  progressFill.style.width = `${progress}%`;
+  progressIcon.style.left = `${progress}%`;
 
-      draggedGhost.remove();
-      draggedGhost = null;
-      draggedOriginal = null;
+  draggedGhost.remove();
+  draggedGhost = null;
+  draggedOriginal = null;
 
-      loadNextTrash();
+  loadNextTrash(); // <<< Šis izsauc nākamo atkritumu!
+}
+
     } else {
       // ja metām nepareizi, atjauno oriģinālo
       draggedOriginal.style.opacity = "1";
