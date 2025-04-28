@@ -5,12 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  // Skaņas
-  const successSound = new Audio('sounds/success.mp3');
-  const errorSound = new Audio('sounds/error.mp3');
-  const victorySound = new Audio('sounds/victory.mp3');
+  // 🎵 Fona mūzika
+  const backgroundMusic = new Audio('sounds/background.mp3');
+  backgroundMusic.loop = true;
+  backgroundMusic.volume = 0.4; // fona skaļums 40%
 
-  let soundEnabled = true; // Skaņas ieslēgtas pēc noklusējuma
+  let soundEnabled = true; // Skaņa ieslēgta sākumā
 
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
@@ -19,8 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   muteButton.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
-    muteButton.innerHTML = soundEnabled ? "🔊 Skaņa ieslēgta" : "🔇 Skaņa izslēgta";
+    if (soundEnabled) {
+      backgroundMusic.play();
+      muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+    } else {
+      backgroundMusic.pause();
+      muteButton.innerHTML = "🔇 Skaņa izslēgta";
+    }
   });
+
+  // Sāk spēlēt fonu uzreiz
+  backgroundMusic.play();
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -70,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>Tu ieguvi <span class="big-score">${score}</span> punktus no <span class="big-score">${trashItems.length}</span>.</p>
         </div>
       `;
-      if (soundEnabled) victorySound.play();
       return;
     }
 
@@ -159,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (matched && matchedBin) {
-      if (soundEnabled) successSound.play();
       score++;
       currentTrashIndex++;
       scoreDisplay.textContent = score;
@@ -192,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       loadNextTrash();
     } else {
-      if (soundEnabled) errorSound.play();
       draggedOriginal.style.opacity = "1";
       draggedOriginal.style.left = startLeft;
       draggedOriginal.style.top = startTop;
