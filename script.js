@@ -59,9 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
     img.style.position = "fixed";
-    img.style.left = "30%";
+    img.style.left = "50%";
     img.style.top = "50%";
-    img.style.transform = "translate(-30%, -50%)";
+    img.style.transform = "translate(-50%, -50%)";
 
     trashHolder.appendChild(img);
 
