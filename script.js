@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let draggedGhost = null;
   let draggedOriginal = null;
+  let originalLeft = "";
+  let originalTop = "";
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
@@ -56,10 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
+    img.style.position = "absolute";
     img.style.left = "50%";
     img.style.top = "50%";
     img.style.transform = "translate(-50%, -50%)";
-    img.style.position = "absolute";
+    img.style.transition = "all 0.25s ease";
 
     trashHolder.appendChild(img);
 
@@ -71,13 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     draggedOriginal = e.target;
 
-    // Izveidojam jaunu "ghost" kopiju
+    // Saglabā sākuma pozīciju
+    originalLeft = draggedOriginal.style.left;
+    originalTop = draggedOriginal.style.top;
+
+    // Izveido "ghost" kopiju
     draggedGhost = draggedOriginal.cloneNode(true);
     draggedGhost.style.position = "fixed";
     draggedGhost.style.left = "0px";
     draggedGhost.style.top = "0px";
-    draggedGhost.style.transform = "translate(-50%, -50%)"; // centrs tieši uz kursoru
-    draggedGhost.style.pointerEvents = "none"; // lai ghost netraucē notikumus
+    draggedGhost.style.transform = "translate(-50%, -50%)";
+    draggedGhost.style.pointerEvents = "none";
     draggedGhost.style.zIndex = "10000";
 
     document.body.appendChild(draggedGhost);
@@ -143,12 +150,19 @@ document.addEventListener("DOMContentLoaded", () => {
       progressFill.style.width = `${progress}%`;
       progressIcon.style.left = `${progress}%`;
 
-      draggedOriginal.remove();
+      // Oriģinālais kļūst blāvāks
+      draggedOriginal.style.opacity = "0.5";
+
       draggedGhost.remove();
-      draggedOriginal = null;
       draggedGhost = null;
+      draggedOriginal = null;
+
       loadNextTrash();
     } else {
+      // Ja nav pareizs, oriģinālais atgriežas sākuma vietā
+      draggedOriginal.style.left = originalLeft;
+      draggedOriginal.style.top = originalTop;
+      draggedOriginal.style.transform = "translate(-50%, -50%)";
       draggedGhost.remove();
       draggedGhost = null;
       draggedOriginal = null;
