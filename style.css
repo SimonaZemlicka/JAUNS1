@@ -24,17 +24,16 @@ body {
   width: 100%;
 }
 
-/* Konteiners pogām ar attālumu */
 .menu-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; /* Attālums starp pogām */
   flex-wrap: wrap;
+  gap: 20px; /* Papildus attālums, bet galveno efektu dod margin */
   margin-bottom: 90px;
+  background-color: transparent; /* Vai izņem pavisam */
 }
 
-/* Poga stils */
 .btn {
   background-color: white;
   color: #247339;
@@ -45,7 +44,9 @@ body {
   cursor: pointer;
   transition: background-color 0.3s;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin: 10px; /* <-- Reālais attālums starp pogām */
 }
+
 
 .btn:hover {
   background-color: #e0e0e0;
