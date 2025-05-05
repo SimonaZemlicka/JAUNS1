@@ -5,17 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
- const backgroundMusic = new Audio('sounds/background.mp3');
-backgroundMusic.volume = 0.4;
+  // Noņem burkānu no punktu joslas ikonas
+  progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
+  progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
 
-// Svarīgi: NEIZMANTO "loop = true"
-backgroundMusic.addEventListener('ended', function() {
-  this.currentTime = 0;
-  this.play();
-}, false);
+  const backgroundMusic = new Audio('sounds/background.mp3');
+  backgroundMusic.volume = 0.4;
 
+  backgroundMusic.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
 
-  let soundEnabled = true; // Skaņa ieslēgta sākumā
+  let soundEnabled = true;
 
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
@@ -33,7 +35,6 @@ backgroundMusic.addEventListener('ended', function() {
     }
   });
 
-  // Sāk spēlēt fonu uzreiz
   backgroundMusic.play();
 
   let currentTrashIndex = 0;
