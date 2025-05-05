@@ -71,21 +71,21 @@ body {
   align-items: center;
 }
 
-.progress-bar {
-  position: relative;
+#progressBar {
   width: 100%;
   height: 30px;
   background-color: #eee;
-  border-radius: 15px;
-  overflow: visible;
+  border-radius: 30px;
+  overflow: hidden;
 }
 
-.progress-fill {
+#progressFill {
   height: 100%;
   background-color: #4CAF50;
   width: 0%;
-  transition: width 0.4s ease;
+  transition: width 0.3s ease;
 }
+
 
 .progress-icon {
   position: absolute;
