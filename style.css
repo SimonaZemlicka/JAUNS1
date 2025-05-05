@@ -80,11 +80,16 @@ body {
     padding: 16px 40px;
   }
 
+
   .menu-wrapper {
-    gap: 30px;
-    padding: 16px 40px;
-    flex-direction: column;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* <-- Šis ir attālums starp pogām */
+  flex-wrap: wrap;
+  margin-bottom: 90px;
+}
+
 
   .bin {
     margin-top: 20px;
