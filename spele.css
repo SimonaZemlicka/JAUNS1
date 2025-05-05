@@ -62,7 +62,7 @@ body {
   z-index: 5;
 }
 
-/* Progresijas josla */
+/* ✅ Progresijas josla */
 .progress-wrapper {
   width: 90%;
   margin-top: 30px;
@@ -71,8 +71,9 @@ body {
   align-items: center;
 }
 
-#progressBar {
-  width: 80%;
+.progress-bar {
+  position: relative;
+  width: 100%;
   height: 25px;
   background-color: #eee;
   border-radius: 30px;
@@ -80,9 +81,9 @@ body {
   margin: 20px auto 10px;
 }
 
-#progressFill {
+.progress-fill {
   height: 100%;
-  width: 10%; /* piemēram 10% – arī tad būs noapaļots */
+  width: 0%;
   background-color: #4CAF50;
   border-radius: 30px;
   transition: width 0.3s ease;
@@ -107,7 +108,7 @@ body {
   color: #1f6f3f;
 }
 
-/* Pogas */
+/* ✅ Pogas */
 .button-wrapper {
   display: flex;
   justify-content: center;
@@ -133,7 +134,7 @@ body {
   transform: scale(1.05);
 }
 
-/* Uzvaras paziņojums */
+/* ✅ Uzvaras paziņojums */
 .final-message {
   text-align: center;
   margin-top: 20px;
@@ -157,13 +158,13 @@ body {
   font-weight: bold;
 }
 
-/* Fade-in efekts */
+/* ✅ Fade-in efekts */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive dizains */
+/* ✅ Responsive dizains */
 @media (max-width: 1024px) {
   .bin {
     width: 120px;
