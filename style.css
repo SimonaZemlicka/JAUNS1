@@ -24,7 +24,15 @@ body {
   width: 100%;
 }
 
-
+/* Konteiners pogām ar attālumu */
+.menu-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Attālums starp pogām */
+  flex-wrap: wrap;
+  margin-bottom: 90px;
+}
 
 /* Poga stils */
 .btn {
@@ -79,17 +87,6 @@ body {
     font-size: 26px;
     padding: 16px 40px;
   }
-
-
-  .menu-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px; /* <-- Šis ir attālums starp pogām */
-  flex-wrap: wrap;
-  margin-bottom: 90px;
-}
-
 
   .bin {
     margin-top: 20px;
