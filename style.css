@@ -27,8 +27,8 @@ body {
 /* Zaļais fons zem pogām */
 .menu-wrapper {
   background-color: transparent;
-  border-radius: 30px;
-  padding: 20px 115px;
+  border-radius: 36px;
+  padding: 10px 115px;
   display: flex;
   justify-content: center;
   align-items: center;
