@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
 
   const backgroundMusic = new Audio('speles_skana.mp3');
-  backgroundMusic.volume = 0.4;
+  backgroundMusic.volume = 0.2;
 
   backgroundMusic.addEventListener('ended', function() {
     this.currentTime = 0;
