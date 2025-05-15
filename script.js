@@ -21,14 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
-  muteButton.innerHTML = "🔊 Ieslēgta skaņa";
+  muteButton.innerHTML = "🔇 Izslēgt skaņu";
   document.querySelector(".button-wrapper").appendChild(muteButton);
 
   muteButton.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
     if (soundEnabled) {
       backgroundMusic.play();
-      muteButton.innerHTML = "🔇 Izslēgt skaņu";
+      muteButton.innerHTML = "🔊 Ieslēgt skaņu";
     } else {
       backgroundMusic.pause();
       muteButton.innerHTML = "🔊 Ieslēgt skaņu";
