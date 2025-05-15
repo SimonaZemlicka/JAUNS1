@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
   progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
 
-  const backgroundMusic = new Audio('1.mp3');
+  const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
 
   backgroundMusic.addEventListener('ended', function() {
