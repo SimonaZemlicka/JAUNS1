@@ -5,7 +5,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
+  // Skaņa jau sākumā
+  const backgroundMusic = new Audio('speles_skana.mp3');
+  backgroundMusic.volume = 0.4;
+  backgroundMusic.loop = true;
 
+  // Automātiska skaņas atskaņošana
+  document.addEventListener("click", () => {
+    if (!backgroundMusic.playing) {
+      backgroundMusic.play();
+    }
+  });
+
+  // Lai skaņa atskaņojas nekavējoties
+  backgroundMusic.play().catch(() => {
+    console.log("Automātiskā skaņas atskaņošana bloķēta. Klikšķiniet, lai ieslēgtu.");
+  });
+
+  let soundEnabled = true;
+
+  const muteButton = document.createElement("button");
+  muteButton.className = "btn mute-btn";
+  muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+  document.querySelector(".button-wrapper").appendChild(muteButton);
+
+  muteButton.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    if (soundEnabled) {
+      backgroundMusic.play();
+      muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+    } else {
+      backgroundMusic.pause();
+      muteButton.innerHTML = "🔇 Skaņa izslēgta";
+    }
+  });
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -63,11 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.style.position = "absolute";
+    img.style.position = "fixed";
     img.style.left = "50%";
     img.style.top = "50%";
     img.style.transform = "translate(-50%, -50%)";
-    img.style.zIndex = "5";
 
     trashHolder.appendChild(img);
 
@@ -116,16 +148,5 @@ document.addEventListener("DOMContentLoaded", () => {
   function dragMove(e) {
     e.preventDefault();
     moveGhost(e);
-  }
-
-  function endDrag() {
-    if (!draggedGhost) return;
-
-    draggedOriginal.style.opacity = "1";
-    draggedOriginal.style.left = startLeft;
-    draggedOriginal.style.top = startTop;
-    draggedGhost.remove();
-    draggedGhost = null;
-    draggedOriginal = null;
   }
 });
