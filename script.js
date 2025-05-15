@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
-  muteButton.innerHTML = "🔊 Ieslēgt skaņu";
+  muteButton.innerHTML = "🔇 Izslēgta skaņa";
   document.querySelector(".button-wrapper").appendChild(muteButton);
 
   muteButton.addEventListener("click", () => {
