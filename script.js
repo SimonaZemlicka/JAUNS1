@@ -21,17 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
-  muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+  muteButton.innerHTML = "🔊 Ieslēgt skaņu";
   document.querySelector(".button-wrapper").appendChild(muteButton);
 
   muteButton.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
     if (soundEnabled) {
       backgroundMusic.play();
-      muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+      muteButton.innerHTML = "🔊 Ieslēgt skaņu";
     } else {
       backgroundMusic.pause();
-      muteButton.innerHTML = "🔇 Skaņa izslēgta";
+      muteButton.innerHTML = "🔇 Izslēgt skaņu";
     }
   });
 
