@@ -5,22 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  // Skaņa jau sākumā
+  // Noņem burkānu no punktu joslas ikonas
+  progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
+  progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
+
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
-  backgroundMusic.loop = true;
 
-  // Automātiska skaņas atskaņošana
-  document.addEventListener("click", () => {
-    if (!backgroundMusic.playing) {
-      backgroundMusic.play();
-    }
-  });
-
-  // Lai skaņa atskaņojas nekavējoties
-  backgroundMusic.play().catch(() => {
-    console.log("Automātiskā skaņas atskaņošana bloķēta. Klikšķiniet, lai ieslēgtu.");
-  });
+  backgroundMusic.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
 
   let soundEnabled = true;
 
@@ -39,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
       muteButton.innerHTML = "🔇 Skaņa izslēgta";
     }
   });
+
+  backgroundMusic.play();
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -82,12 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
     trashHolder.innerHTML = "";
 
     if (currentTrashIndex >= trashItems.length) {
-      trashHolder.innerHTML = `
+      trashHolder.innerHTML = 
         <div class="final-message">
           <h1>🎉 Visi atkritumi sašķiroti!</h1>
           <p>Tu ieguvi <span class="big-score">${score}</span> punktus no <span class="big-score">${trashItems.length}</span>.</p>
         </div>
-      `;
+      ;
       return;
     }
 
@@ -141,12 +138,86 @@ document.addEventListener("DOMContentLoaded", () => {
     const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
     const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
 
-    draggedGhost.style.left = `${clientX}px`;
-    draggedGhost.style.top = `${clientY}px`;
+    draggedGhost.style.left = ${clientX}px;
+    draggedGhost.style.top = ${clientY}px;
   }
 
   function dragMove(e) {
     e.preventDefault();
     moveGhost(e);
+  }
+
+  function endDrag() {
+    if (!draggedGhost) return;
+
+    const trashType = draggedOriginal.dataset.type;
+    const itemRect = draggedGhost.getBoundingClientRect();
+    let matched = false;
+    let matchedBin = null;
+
+    bins.forEach((bin) => {
+      const binRect = bin.getBoundingClientRect();
+      const binType = bin.getAttribute("src").replace(".png", "");
+
+      const overlap = !(
+        itemRect.right < binRect.left ||
+        itemRect.left > binRect.right ||
+        itemRect.bottom < binRect.top ||
+        itemRect.top > binRect.bottom
+      );
+
+      if (overlap && trashType === binType) {
+        matched = true;
+        matchedBin = bin;
+      }
+    });
+
+    if (matched && matchedBin) {
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
+
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = ${progress}%;
+      progressIcon.style.left = ${progress}%;
+
+      const holderRect = trashHolder.getBoundingClientRect();
+      const binRect = matchedBin.getBoundingClientRect();
+      const centerX = binRect.left + binRect.width / 2;
+      const trashZoneY = holderRect.top + 40;
+
+      const relativeCenterX = centerX - holderRect.left;
+      const relativeCenterY = trashZoneY - holderRect.top;
+
+      draggedOriginal.style.position = "absolute";
+      draggedOriginal.style.left = ${relativeCenterX}px;
+      draggedOriginal.style.top = ${relativeCenterY}px;
+      draggedOriginal.style.transform = "translate(-50%, -50%) scale(1.1)";
+      draggedOriginal.style.transition = "all 0.3s ease";
+
+      setTimeout(() => {
+        draggedOriginal.style.transform = "translate(-50%, -50%) scale(1)";
+      }, 300);
+
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
+
+      loadNextTrash();
+    } else {
+      draggedOriginal.style.opacity = "1";
+      draggedOriginal.style.left = startLeft;
+      draggedOriginal.style.top = startTop;
+      draggedOriginal.style.transform = "translate(-50%, -50%)";
+
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
+    }
+
+    document.removeEventListener("mousemove", dragMove);
+    document.removeEventListener("mouseup", endDrag);
+    document.removeEventListener("touchmove", dragMove);
+    document.removeEventListener("touchend", endDrag);
   }
 });
