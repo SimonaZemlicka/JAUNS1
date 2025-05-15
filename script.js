@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   const trashHolder = document.getElementById("trashHolder");
   const bins = document.querySelectorAll(".bin");
   const scoreDisplay = document.getElementById("score");
@@ -6,30 +6,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   const progressIcon = document.getElementById("progressIcon");
 
   // Noņem burkānu no punktu joslas ikonas
-  progressIcon.innerHTML = "";
+  progressIcon.innerHTML = ""; 
   progressIcon.style.backgroundImage = "none";
 
-  // Izveidojam AudioContext un nepārtrauktu cilpu
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // Automātiska mūzika, kas sāk skanēt uzreiz
+  const backgroundMusic = new Audio('speles_skana.mp3');
+  backgroundMusic.volume = 0.4;
+  backgroundMusic.loop = true;
 
-  async function playSeamlessMusic() {
-    const response = await fetch('speles_skana.mp3');
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-    function createBufferSource() {
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      source.loop = true; // Nepārtraukta cilpa
-      source.start(0);
-      return source;
+  // Atskaņo mūziku, ja lietotājs ir mijiedarbojies (poga vai lapa ielādēta)
+  document.addEventListener('click', () => {
+    if (backgroundMusic.paused) {
+      backgroundMusic.play().catch(error => console.log("Mūzika netika atskaņota: ", error));
     }
-
-    createBufferSource();
-  }
-
-  playSeamlessMusic();
+  });
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -92,5 +82,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     img.addEventListener("mousedown", startDrag);
     img.addEventListener("touchstart", startDrag, { passive: false });
   }
-
 });
