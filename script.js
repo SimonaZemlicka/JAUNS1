@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
     soundEnabled = !soundEnabled;
     if (soundEnabled) {
       backgroundMusic.play();
-      muteButton.innerHTML = "🔊 Ieslēgt skaņu";
+      muteButton.innerHTML = "🔇 Izslēgt skaņu";
     } else {
       backgroundMusic.pause();
-      muteButton.innerHTML = "🔇 Izslēgt skaņu";
+      muteButton.innerHTML = "🔊 Ieslēgt skaņu";
     }
   });
 
