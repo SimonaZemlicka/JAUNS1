@@ -9,16 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
   progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
   progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
 
+  // Fona mūzika
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
+  backgroundMusic.loop = true;
 
-  backgroundMusic.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-  }, false);
+  // Atskaņo mūziku uzreiz, kad lapa tiek ielādēta
+  window.addEventListener("load", () => {
+    backgroundMusic.play().catch((error) => {
+      console.log("Mūzikas atskaņošana automātiski bloķēta. Pieskarieties vai klikšķiniet, lai sāktu.");
+    });
+  });
 
   let soundEnabled = true;
 
+  // Skaņas poga
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
   muteButton.innerHTML = "🔊 Skaņa ieslēgta";
@@ -34,8 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       muteButton.innerHTML = "🔇 Skaņa izslēgta";
     }
   });
-
-  backgroundMusic.play();
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -150,74 +153,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function endDrag() {
     if (!draggedGhost) return;
 
-    const trashType = draggedOriginal.dataset.type;
-    const itemRect = draggedGhost.getBoundingClientRect();
-    let matched = false;
-    let matchedBin = null;
-
-    bins.forEach((bin) => {
-      const binRect = bin.getBoundingClientRect();
-      const binType = bin.getAttribute("src").replace(".png", "");
-
-      const overlap = !(
-        itemRect.right < binRect.left ||
-        itemRect.left > binRect.right ||
-        itemRect.bottom < binRect.top ||
-        itemRect.top > binRect.bottom
-      );
-
-      if (overlap && trashType === binType) {
-        matched = true;
-        matchedBin = bin;
-      }
-    });
-
-    if (matched && matchedBin) {
-      score++;
-      currentTrashIndex++;
-      scoreDisplay.textContent = score;
-
-      const progress = (score / trashItems.length) * 100;
-      progressFill.style.width = `${progress}%`;
-      progressIcon.style.left = `${progress}%`;
-
-      const holderRect = trashHolder.getBoundingClientRect();
-      const binRect = matchedBin.getBoundingClientRect();
-      const centerX = binRect.left + binRect.width / 2;
-      const trashZoneY = holderRect.top + 40;
-
-      const relativeCenterX = centerX - holderRect.left;
-      const relativeCenterY = trashZoneY - holderRect.top;
-
-      draggedOriginal.style.position = "absolute";
-      draggedOriginal.style.left = `${relativeCenterX}px`;
-      draggedOriginal.style.top = `${relativeCenterY}px`;
-      draggedOriginal.style.transform = "translate(-50%, -50%) scale(1.1)";
-      draggedOriginal.style.transition = "all 0.3s ease";
-
-      setTimeout(() => {
-        draggedOriginal.style.transform = "translate(-50%, -50%) scale(1)";
-      }, 300);
-
-      draggedGhost.remove();
-      draggedGhost = null;
-      draggedOriginal = null;
-
-      loadNextTrash();
-    } else {
-      draggedOriginal.style.opacity = "1";
-      draggedOriginal.style.left = startLeft;
-      draggedOriginal.style.top = startTop;
-      draggedOriginal.style.transform = "translate(-50%, -50%)";
-
-      draggedGhost.remove();
-      draggedGhost = null;
-      draggedOriginal = null;
-    }
-
-    document.removeEventListener("mousemove", dragMove);
-    document.removeEventListener("mouseup", endDrag);
-    document.removeEventListener("touchmove", dragMove);
-    document.removeEventListener("touchend", endDrag);
+    draggedOriginal.style.opacity = "1";
+    draggedOriginal.style.left = startLeft;
+    draggedOriginal.style.top = startTop;
+    draggedGhost.remove();
+    draggedGhost = null;
+    draggedOriginal = null;
   }
 });
