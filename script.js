@@ -9,21 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
   progressIcon.innerHTML = "";
   progressIcon.style.backgroundImage = "none";
 
-  // Fona mūzika
+  // Fona mūzika (tikai fonā, neietekmē spēli)
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
   backgroundMusic.loop = true;
-
-  // Atskaņo mūziku uzreiz
-  window.addEventListener("load", () => {
-    backgroundMusic.play().catch(error => {
-      console.log("Mūzika nevarēja sākt skanēt automātiski:", error);
-    });
+  backgroundMusic.play().catch((error) => {
+    console.log("Skaņa nevar sākt skanēt automātiski:", error);
   });
 
   let soundEnabled = true;
-
-  // Skaņas poga
   const muteButton = document.createElement("button");
   muteButton.className = "btn mute-btn";
   muteButton.innerHTML = "🔊 Skaņa ieslēgta";
@@ -60,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" }
+    { src: "bat3.png", type: "m6" },
   ];
 
   shuffleArray(trashItems);
@@ -91,7 +85,11 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.draggable = false;
+    img.style.position = "fixed";
+    img.style.left = "50%";
+    img.style.top = "50%";
+    img.style.transform = "translate(-50%, -50%)";
+
     trashHolder.appendChild(img);
 
     img.addEventListener("mousedown", startDrag);
@@ -100,59 +98,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function startDrag(e) {
     e.preventDefault();
-    const draggedItem = e.target;
-    draggedItem.style.opacity = "0.7";
+    draggedOriginal = e.target;
+    startLeft = draggedOriginal.style.left;
+    startTop = draggedOriginal.style.top;
 
-    function onDragMove(e) {
-      const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
-      draggedItem.style.position = "absolute";
-      draggedItem.style.left = `${clientX - draggedItem.width / 2}px`;
-      draggedItem.style.top = `${clientY - draggedItem.height / 2}px`;
-    }
+    draggedOriginal.style.opacity = "0.5";
+    document.addEventListener("mousemove", dragMove);
+    document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchmove", dragMove, { passive: false });
+    document.addEventListener("touchend", endDrag);
+  }
 
-    function onDragEnd() {
-      const trashType = draggedItem.getAttribute("data-type");
-      let matched = false;
+  function dragMove(e) {
+    e.preventDefault();
+    const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
 
-      bins.forEach(bin => {
-        const binType = bin.getAttribute("src").replace(".png", "");
-        const binRect = bin.getBoundingClientRect();
-        const itemRect = draggedItem.getBoundingClientRect();
+    draggedOriginal.style.left = `${clientX}px`;
+    draggedOriginal.style.top = `${clientY}px`;
+  }
 
-        if (
-          itemRect.left < binRect.right &&
-          itemRect.right > binRect.left &&
-          itemRect.top < binRect.bottom &&
-          itemRect.bottom > binRect.top &&
-          trashType === binType
-        ) {
-          matched = true;
-        }
-      });
+  function endDrag() {
+    const trashType = draggedOriginal.dataset.type;
+    let matched = false;
 
-      if (matched) {
-        score++;
-        scoreDisplay.textContent = score;
-        currentTrashIndex++;
-        draggedItem.remove();
-        loadNextTrash();
-      } else {
-        draggedItem.style.left = "50%";
-        draggedItem.style.top = "50%";
-        draggedItem.style.transform = "translate(-50%, -50%)";
-        draggedItem.style.opacity = "1";
+    bins.forEach((bin) => {
+      const binType = bin.getAttribute("src").replace(".png", "");
+      if (binType === trashType) {
+        matched = true;
       }
+    });
 
-      document.removeEventListener("mousemove", onDragMove);
-      document.removeEventListener("mouseup", onDragEnd);
-      document.removeEventListener("touchmove", onDragMove);
-      document.removeEventListener("touchend", onDragEnd);
+    if (matched) {
+      score++;
+      scoreDisplay.textContent = score;
+      currentTrashIndex++;
+      loadNextTrash();
+    } else {
+      draggedOriginal.style.left = startLeft;
+      draggedOriginal.style.top = startTop;
     }
 
-    document.addEventListener("mousemove", onDragMove);
-    document.addEventListener("mouseup", onDragEnd);
-    document.addEventListener("touchmove", onDragMove);
-    document.addEventListener("touchend", onDragEnd);
+    draggedOriginal.style.opacity = "1";
+    document.removeEventListener("mousemove", dragMove);
+    document.removeEventListener("mouseup", endDrag);
+    document.removeEventListener("touchmove", dragMove);
+    document.removeEventListener("touchend", endDrag);
   }
 });
