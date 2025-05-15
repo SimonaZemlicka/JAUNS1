@@ -5,32 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  // Nepārtraukta fona mūzika
-  const backgroundMusic = new Audio('speles_skana.mp3');
-  backgroundMusic.volume = 0.4;
-  backgroundMusic.loop = false; // NEIZMANTO loop tieši
-  backgroundMusic.addEventListener("ended", () => {
-    backgroundMusic.currentTime = 0;
-    backgroundMusic.play();
-  });
 
-  // Automātiska skaņas atskaņošana, kad lapa kļūst redzama
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      backgroundMusic.play().catch(() => {
-        console.log("Automātiskā skaņas atskaņošana bloķēta.");
-      });
-    } else {
-      backgroundMusic.pause();
-    }
-  });
-
-  // Sāk spēlēt uzreiz, ja lapa ir redzama
-  if (document.visibilityState === "visible") {
-    backgroundMusic.play().catch(() => {
-      console.log("Automātiskā skaņas atskaņošana bloķēta.");
-    });
-  }
 
   let currentTrashIndex = 0;
   let score = 0;
