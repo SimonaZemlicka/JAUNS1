@@ -5,40 +5,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  // Skaņa jau sākumā
+  // Nepārtraukta fona mūzika
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
-  backgroundMusic.loop = true;
-
-  // Automātiska skaņas atskaņošana
-  document.addEventListener("click", () => {
-    if (!backgroundMusic.playing) {
-      backgroundMusic.play();
-    }
+  backgroundMusic.loop = false; // NEIZMANTO loop tieši
+  backgroundMusic.addEventListener("ended", () => {
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play();
   });
 
-  // Lai skaņa atskaņojas nekavējoties
-  backgroundMusic.play().catch(() => {
-    console.log("Automātiskā skaņas atskaņošana bloķēta. Klikšķiniet, lai ieslēgtu.");
-  });
-
-  let soundEnabled = true;
-
-  const muteButton = document.createElement("button");
-  muteButton.className = "btn mute-btn";
-  muteButton.innerHTML = "🔊 Skaņa ieslēgta";
-  document.querySelector(".button-wrapper").appendChild(muteButton);
-
-  muteButton.addEventListener("click", () => {
-    soundEnabled = !soundEnabled;
-    if (soundEnabled) {
-      backgroundMusic.play();
-      muteButton.innerHTML = "🔊 Skaņa ieslēgta";
+  // Automātiska skaņas atskaņošana, kad lapa kļūst redzama
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      backgroundMusic.play().catch(() => {
+        console.log("Automātiskā skaņas atskaņošana bloķēta.");
+      });
     } else {
       backgroundMusic.pause();
-      muteButton.innerHTML = "🔇 Skaņa izslēgta";
     }
   });
+
+  // Sāk spēlēt uzreiz, ja lapa ir redzama
+  if (document.visibilityState === "visible") {
+    backgroundMusic.play().catch(() => {
+      console.log("Automātiskā skaņas atskaņošana bloķēta.");
+    });
+  }
 
   let currentTrashIndex = 0;
   let score = 0;
@@ -142,11 +134,4 @@ document.addEventListener("DOMContentLoaded", () => {
     const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
 
     draggedGhost.style.left = `${clientX}px`;
-    draggedGhost.style.top = `${clientY}px`;
-  }
-
-  function dragMove(e) {
-    e.preventDefault();
-    moveGhost(e);
-  }
-});
+    dragge
