@@ -6,18 +6,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressIcon = document.getElementById("progressIcon");
 
   // Noņem burkānu no punktu joslas ikonas
-  progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
-  progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
+  progressIcon.innerHTML = "";
+  progressIcon.style.backgroundImage = "none";
 
   // Fona mūzika
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.4;
   backgroundMusic.loop = true;
 
-  // Atskaņo mūziku uzreiz, kad lapa tiek ielādēta
+  // Atskaņo mūziku uzreiz
   window.addEventListener("load", () => {
-    backgroundMusic.play().catch((error) => {
-      console.log("Mūzikas atskaņošana automātiski bloķēta. Pieskarieties vai klikšķiniet, lai sāktu.");
+    backgroundMusic.play().catch(error => {
+      console.log("Mūzika nevarēja sākt skanēt automātiski:", error);
     });
   });
 
@@ -42,11 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentTrashIndex = 0;
   let score = 0;
-  let draggedOriginal = null;
-  let draggedGhost = null;
-  let startLeft = "";
-  let startTop = "";
-
   const trashItems = [
     { src: "partika1.png", type: "m1" },
     { src: "partika2.png", type: "m1" },
@@ -65,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { src: "papirs3.png", type: "m5" },
     { src: "bat1.png", type: "m6" },
     { src: "bat2.png", type: "m6" },
-    { src: "bat3.png", type: "m6" },
+    { src: "bat3.png", type: "m6" }
   ];
 
   shuffleArray(trashItems);
@@ -96,11 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.style.position = "fixed";
-    img.style.left = "50%";
-    img.style.top = "50%";
-    img.style.transform = "translate(-50%, -50%)";
-
+    img.draggable = false;
     trashHolder.appendChild(img);
 
     img.addEventListener("mousedown", startDrag);
@@ -109,55 +100,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function startDrag(e) {
     e.preventDefault();
-    draggedOriginal = e.target;
+    const draggedItem = e.target;
+    draggedItem.style.opacity = "0.7";
 
-    startLeft = draggedOriginal.style.left;
-    startTop = draggedOriginal.style.top;
+    function onDragMove(e) {
+      const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
+      draggedItem.style.position = "absolute";
+      draggedItem.style.left = `${clientX - draggedItem.width / 2}px`;
+      draggedItem.style.top = `${clientY - draggedItem.height / 2}px`;
+    }
 
-    draggedOriginal.style.opacity = "0.5";
+    function onDragEnd() {
+      const trashType = draggedItem.getAttribute("data-type");
+      let matched = false;
 
-    draggedGhost = draggedOriginal.cloneNode(true);
-    draggedGhost.style.opacity = "1";
-    draggedGhost.style.position = "fixed";
-    draggedGhost.style.left = "0px";
-    draggedGhost.style.top = "0px";
-    draggedGhost.style.transform = "translate(-50%, -50%)";
-    draggedGhost.style.pointerEvents = "none";
-    draggedGhost.style.zIndex = "10000";
+      bins.forEach(bin => {
+        const binType = bin.getAttribute("src").replace(".png", "");
+        const binRect = bin.getBoundingClientRect();
+        const itemRect = draggedItem.getBoundingClientRect();
 
-    document.body.appendChild(draggedGhost);
+        if (
+          itemRect.left < binRect.right &&
+          itemRect.right > binRect.left &&
+          itemRect.top < binRect.bottom &&
+          itemRect.bottom > binRect.top &&
+          trashType === binType
+        ) {
+          matched = true;
+        }
+      });
 
-    moveGhost(e);
+      if (matched) {
+        score++;
+        scoreDisplay.textContent = score;
+        currentTrashIndex++;
+        draggedItem.remove();
+        loadNextTrash();
+      } else {
+        draggedItem.style.left = "50%";
+        draggedItem.style.top = "50%";
+        draggedItem.style.transform = "translate(-50%, -50%)";
+        draggedItem.style.opacity = "1";
+      }
 
-    document.addEventListener("mousemove", dragMove);
-    document.addEventListener("mouseup", endDrag);
-    document.addEventListener("touchmove", dragMove, { passive: false });
-    document.addEventListener("touchend", endDrag);
-  }
+      document.removeEventListener("mousemove", onDragMove);
+      document.removeEventListener("mouseup", onDragEnd);
+      document.removeEventListener("touchmove", onDragMove);
+      document.removeEventListener("touchend", onDragEnd);
+    }
 
-  function moveGhost(e) {
-    if (!draggedGhost) return;
-
-    const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
-
-    draggedGhost.style.left = `${clientX}px`;
-    draggedGhost.style.top = `${clientY}px`;
-  }
-
-  function dragMove(e) {
-    e.preventDefault();
-    moveGhost(e);
-  }
-
-  function endDrag() {
-    if (!draggedGhost) return;
-
-    draggedOriginal.style.opacity = "1";
-    draggedOriginal.style.left = startLeft;
-    draggedOriginal.style.top = startTop;
-    draggedGhost.remove();
-    draggedGhost = null;
-    draggedOriginal = null;
+    document.addEventListener("mousemove", onDragMove);
+    document.addEventListener("mouseup", onDragEnd);
+    document.addEventListener("touchmove", onDragMove);
+    document.addEventListener("touchend", onDragEnd);
   }
 });
