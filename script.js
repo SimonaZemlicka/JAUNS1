@@ -88,10 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.setAttribute("data-type", trash.type);
-    img.style.position = "fixed";
+    img.style.position = "absolute";
     img.style.left = "50%";
     img.style.top = "50%";
     img.style.transform = "translate(-50%, -50%)";
+    img.style.zIndex = "5";
 
     trashHolder.appendChild(img);
 
@@ -134,4 +135,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
 
     draggedGhost.style.left = `${clientX}px`;
-    dragge
+    draggedGhost.style.top = `${clientY}px`;
+  }
+
+  function dragMove(e) {
+    e.preventDefault();
+    moveGhost(e);
+  }
+
+  function endDrag() {
+    if (!draggedGhost) return;
+
+    draggedOriginal.style.opacity = "1";
+    draggedOriginal.style.left = startLeft;
+    draggedOriginal.style.top = startTop;
+    draggedGhost.remove();
+    draggedGhost = null;
+    draggedOriginal = null;
+  }
+});
