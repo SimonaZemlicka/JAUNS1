@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       muteButton.innerHTML = "🔊 Ieslēgt skaņu";
     } else {
       backgroundMusic.pause();
-      muteButton.innerHTML = "🔊 Ieslēgt skaņu";
+      muteButton.innerHTML = "🔇 Izslēgt skaņu";
     }
   });
 
