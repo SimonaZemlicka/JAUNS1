@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressFill = document.getElementById("progressFill");
   const progressIcon = document.getElementById("progressIcon");
 
-  progressIcon.innerHTML = "";
-  progressIcon.style.backgroundImage = "none";
+  // Noņem burkānu no punktu joslas ikonas
+  progressIcon.innerHTML = ""; // Ja tur bija emoji vai <img>
+  progressIcon.style.backgroundImage = "none"; // Ja tur bija CSS fons
 
   const backgroundMusic = new Audio('speles_skana.mp3');
   backgroundMusic.volume = 0.2;
@@ -38,15 +39,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentTrashIndex = 0;
   let score = 0;
+  let draggedOriginal = null;
+  let draggedGhost = null;
+  let startLeft = "";
+  let startTop = "";
 
   const trashItems = [
     { src: "partika1.png", type: "m1" },
     { src: "partika2.png", type: "m1" },
+    { src: "partika3.png", type: "m1" },
     { src: "stikls1.png", type: "m2" },
+    { src: "stikls2.png", type: "m2" },
+    { src: "stikls3.png", type: "m2" },
     { src: "metals1.png", type: "m3" },
+    { src: "metals2.png", type: "m3" },
+    { src: "metals3.png", type: "m3" },
     { src: "plast1.png", type: "m4" },
+    { src: "plast2.png", type: "m4" },
+    { src: "plast3.png", type: "m4" },
     { src: "papirs1.png", type: "m5" },
-    { src: "bat1.png", type: "m6" }
+    { src: "papirs2.png", type: "m5" },
+    { src: "papirs3.png", type: "m5" },
+    { src: "bat1.png", type: "m6" },
+    { src: "bat2.png", type: "m6" },
+    { src: "bat3.png", type: "m6" },
   ];
 
   shuffleArray(trashItems);
@@ -60,62 +76,148 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadNextTrash() {
-    if (currentTrashIndex >= trashItems.length) return;
-
     trashHolder.innerHTML = "";
-    const trash = trashItems[currentTrashIndex];
 
+    if (currentTrashIndex >= trashItems.length) {
+      trashHolder.innerHTML = 
+        <div class="final-message">
+          <h1>🎉 Visi atkritumi sašķiroti!</h1>
+          <p>Tu ieguvi <span class="big-score">${score}</span> punktus no <span class="big-score">${trashItems.length}</span>.</p>
+        </div>
+      ;
+      return;
+    }
+
+    const trash = trashItems[currentTrashIndex];
     const img = document.createElement("img");
     img.src = trash.src;
     img.className = "trash-item";
-    img.dataset.type = trash.type;
-    img.style.touchAction = "none"; // Planšetēm optimizēts
-
-    img.addEventListener("touchstart", startTouch);
-    img.addEventListener("mousedown", startTouch);
+    img.setAttribute("data-type", trash.type);
+    img.style.position = "fixed";
+    img.style.left = "50%";
+    img.style.top = "50%";
+    img.style.transform = "translate(-50%, -50%)";
 
     trashHolder.appendChild(img);
+
+    img.addEventListener("mousedown", startDrag);
+    img.addEventListener("touchstart", startDrag, { passive: false });
   }
 
-  function startTouch(e) {
+  function startDrag(e) {
     e.preventDefault();
-    const target = e.target;
-    target.style.position = "absolute";
-    target.style.transition = "transform 0.2s";
+    draggedOriginal = e.target;
 
-    const move = (event) => {
-      const x = event.touches ? event.touches[0].clientX : event.clientX;
-      const y = event.touches ? event.touches[0].clientY : event.clientY;
-      target.style.left = `${x - 50}px`;
-      target.style.top = `${y - 50}px`;
-    };
+    startLeft = draggedOriginal.style.left;
+    startTop = draggedOriginal.style.top;
 
-    const end = () => {
-      document.removeEventListener("mousemove", move);
-      document.removeEventListener("touchmove", move);
-    };
+    draggedOriginal.style.opacity = "0.5";
 
-    document.addEventListener("mousemove", move);
-    document.addEventListener("touchmove", move);
-    document.addEventListener("mouseup", end);
-    document.addEventListener("touchend", end);
+    draggedGhost = draggedOriginal.cloneNode(true);
+    draggedGhost.style.opacity = "1";
+    draggedGhost.style.position = "fixed";
+    draggedGhost.style.left = "0px";
+    draggedGhost.style.top = "0px";
+    draggedGhost.style.transform = "translate(-50%, -50%)";
+    draggedGhost.style.pointerEvents = "none";
+    draggedGhost.style.zIndex = "10000";
+
+    document.body.appendChild(draggedGhost);
+
+    moveGhost(e);
+
+    document.addEventListener("mousemove", dragMove);
+    document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchmove", dragMove, { passive: false });
+    document.addEventListener("touchend", endDrag);
   }
 
-  bins.forEach((bin) => {
-    bin.addEventListener("touchend", (e) => checkDrop(e));
-    bin.addEventListener("mouseup", (e) => checkDrop(e));
-  });
+  function moveGhost(e) {
+    if (!draggedGhost) return;
 
-  function checkDrop(e) {
-    const draggedItem = document.querySelector(".trash-item");
-    if (draggedItem && draggedItem.dataset.type === e.target.dataset.type) {
+    const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
+
+    draggedGhost.style.left = ${clientX}px;
+    draggedGhost.style.top = ${clientY}px;
+  }
+
+  function dragMove(e) {
+    e.preventDefault();
+    moveGhost(e);
+  }
+
+  function endDrag() {
+    if (!draggedGhost) return;
+
+    const trashType = draggedOriginal.dataset.type;
+    const itemRect = draggedGhost.getBoundingClientRect();
+    let matched = false;
+    let matchedBin = null;
+
+    bins.forEach((bin) => {
+      const binRect = bin.getBoundingClientRect();
+      const binType = bin.getAttribute("src").replace(".png", "");
+
+      const overlap = !(
+        itemRect.right < binRect.left ||
+        itemRect.left > binRect.right ||
+        itemRect.bottom < binRect.top ||
+        itemRect.top > binRect.bottom
+      );
+
+      if (overlap && trashType === binType) {
+        matched = true;
+        matchedBin = bin;
+      }
+    });
+
+    if (matched && matchedBin) {
       score++;
       currentTrashIndex++;
       scoreDisplay.textContent = score;
-      progressFill.style.width = `${(score / trashItems.length) * 100}%`;
-      loadNextTrash();
-    }
-  }
 
-  loadNextTrash();
+      const progress = (score / trashItems.length) * 100;
+      progressFill.style.width = ${progress}%;
+      progressIcon.style.left = ${progress}%;
+
+      const holderRect = trashHolder.getBoundingClientRect();
+      const binRect = matchedBin.getBoundingClientRect();
+      const centerX = binRect.left + binRect.width / 2;
+      const trashZoneY = holderRect.top + 40;
+
+      const relativeCenterX = centerX - holderRect.left;
+      const relativeCenterY = trashZoneY - holderRect.top;
+
+      draggedOriginal.style.position = "absolute";
+      draggedOriginal.style.left = ${relativeCenterX}px;
+      draggedOriginal.style.top = ${relativeCenterY}px;
+      draggedOriginal.style.transform = "translate(-50%, -50%) scale(1.1)";
+      draggedOriginal.style.transition = "all 0.3s ease";
+
+      setTimeout(() => {
+        draggedOriginal.style.transform = "translate(-50%, -50%) scale(1)";
+      }, 300);
+
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
+
+      loadNextTrash();
+    } else {
+      draggedOriginal.style.opacity = "1";
+      draggedOriginal.style.left = startLeft;
+      draggedOriginal.style.top = startTop;
+      draggedOriginal.style.transform = "translate(-50%, -50%)";
+
+      draggedGhost.remove();
+      draggedGhost = null;
+      draggedOriginal = null;
+    }
+
+    document.removeEventListener("mousemove", dragMove);
+    document.removeEventListener("mouseup", endDrag);
+    document.removeEventListener("touchmove", dragMove);
+    document.removeEventListener("touchend", endDrag);
+  }
 });
