@@ -69,27 +69,53 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = trash.src;
     img.className = "trash-item";
     img.dataset.type = trash.type;
-    img.draggable = true;
+    img.style.touchAction = "none"; // Planšetēm optimizēts
 
-    img.addEventListener("dragstart", () => img.classList.add("dragging"));
-    img.addEventListener("dragend", () => img.classList.remove("dragging"));
+    img.addEventListener("touchstart", startTouch);
+    img.addEventListener("mousedown", startTouch);
 
     trashHolder.appendChild(img);
   }
 
+  function startTouch(e) {
+    e.preventDefault();
+    const target = e.target;
+    target.style.position = "absolute";
+    target.style.transition = "transform 0.2s";
+
+    const move = (event) => {
+      const x = event.touches ? event.touches[0].clientX : event.clientX;
+      const y = event.touches ? event.touches[0].clientY : event.clientY;
+      target.style.left = `${x - 50}px`;
+      target.style.top = `${y - 50}px`;
+    };
+
+    const end = () => {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("touchmove", move);
+    };
+
+    document.addEventListener("mousemove", move);
+    document.addEventListener("touchmove", move);
+    document.addEventListener("mouseup", end);
+    document.addEventListener("touchend", end);
+  }
+
   bins.forEach((bin) => {
-    bin.addEventListener("dragover", (e) => e.preventDefault());
-    bin.addEventListener("drop", (e) => {
-      const draggedItem = document.querySelector(".dragging");
-      if (draggedItem && draggedItem.dataset.type === bin.dataset.type) {
-        score++;
-        currentTrashIndex++;
-        scoreDisplay.textContent = score;
-        progressFill.style.width = `${(score / trashItems.length) * 100}%`;
-        loadNextTrash();
-      }
-    });
+    bin.addEventListener("touchend", (e) => checkDrop(e));
+    bin.addEventListener("mouseup", (e) => checkDrop(e));
   });
+
+  function checkDrop(e) {
+    const draggedItem = document.querySelector(".trash-item");
+    if (draggedItem && draggedItem.dataset.type === e.target.dataset.type) {
+      score++;
+      currentTrashIndex++;
+      scoreDisplay.textContent = score;
+      progressFill.style.width = `${(score / trashItems.length) * 100}%`;
+      loadNextTrash();
+    }
+  }
 
   loadNextTrash();
 });
